@@ -1,0 +1,35 @@
+{
+  "name": "shuffle-text-app",
+  "version": "1.0.0",
+  "description": "A simple Electron app to shuffle text",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-builder"
+  },
+  "author": "Seu Nome",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^23.3.13"
+  },
+  "build": {
+    "appId": "com.example.shuffletext",
+    "productName": "Shuffle Text App",
+    "files": [
+      "main.js",
+      "index.html",
+      "preload.js",
+      "renderer.js",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis"
+    }
+  },
+  "dependencies": {
+    "puppeteer-core": "^22.14.0"
+  }
+}
