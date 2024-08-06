@@ -1,1 +1,1 @@
-# data-miner
+# Simple google business scraper
