@@ -2,3 +2,5 @@
 node_modules/
 package-lock.json
 dist/
+.idea/dataSources.local.xml
+.idea/dataSources.xml

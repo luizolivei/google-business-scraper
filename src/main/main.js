@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
-const scrapeGoogleBusiness = require('../scripts/scrapeGoogleBusiness');
+const getDataFromSearch = require('../scripts/scraping/index.js');
 const path = require('path');
 
 function createWindow() {
@@ -33,6 +33,6 @@ app.on('activate', () => {
 ipcMain.on('search', async (event, { term, location }) => {
     console.log("term", term);
     console.log("location", location);
-    const result = await scrapeGoogleBusiness();
+    const result = await getDataFromSearch();
     event.sender.send('search-results', result);
 });

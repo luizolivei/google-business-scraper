@@ -17,14 +17,9 @@
     "appId": "none.com",
     "productName": "Data miner app",
     "files": [
-      "main.js",
-      "index.html",
-      "scrapeGoogleBusiness.js",
-      "render.js",
-      "preload.js",
-      "logger.js",
-      "node_modules/**/*",
-      "browser/**/*"
+      "src/**/*",
+      "assets/**/*",
+      "node_modules/**/*"
     ],
     "directories": {
       "output": "dist"
@@ -35,6 +30,7 @@
   },
   "dependencies": {
     "electron-log": "^5.1.7",
+    "pg": "^8.12.0",
     "puppeteer-core": "^22.14.0",
     "uuid": "^10.0.0"
   }
