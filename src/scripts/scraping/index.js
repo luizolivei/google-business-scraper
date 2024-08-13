@@ -19,7 +19,8 @@ const getDataFromSearch = async () => {
 
         const baseFetchUrl = `https://www.google.com/search?client=opera-gx&tbm=lcl&q=${searchTerm}&rflfq=1&num=10`;
 
-        const totalPages = await getMaxPage(page, baseFetchUrl);
+        // const totalPages = await getMaxPage(page, baseFetchUrl);
+        const totalPages = 1;
 
         for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
             console.log("Página ", pageIndex);

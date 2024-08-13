@@ -2,7 +2,7 @@
   "name": "data-miner",
   "version": "1.0.0",
   "description": "A simple Electron app to shuffle text",
-  "main": "src/main/main.js",
+  "main": "src/main/index.js",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder"
@@ -31,7 +31,9 @@
   "dependencies": {
     "electron-log": "^5.1.7",
     "pg": "^8.12.0",
+    "pg-hstore": "^2.3.4",
     "puppeteer-core": "^22.14.0",
+    "sequelize": "^6.37.3",
     "uuid": "^10.0.0"
   }
 }

@@ -6,33 +6,134 @@ const getBusinessInfo = async (page, fetchUrl) => {
         await page.waitForSelector('h2.qrShPb.pXs6bb.PZPZlf.q8U8x.aTI8gc.PPT5v', {timeout: 10000});
 
         return await page.evaluate(() => {
-            const businessElement = document.querySelector('h2.qrShPb.pXs6bb.PZPZlf.q8U8x.aTI8gc.PPT5v');
-            const phoneElement = document.querySelector('a[data-dtype="d3ph"] span[aria-label]');
+            // Função para normalizar os textos, removendo problemas com caracteres acentuados
+            const normalizeText = (text) => {
+                return text.normalize('NFD').replace(/[\u0300-\u036f]/g, "").trim();
+            };
 
             let businessName = "";
             let phoneNumber = "";
+            let address = "";
+            let rating = "";
+            let reviewCount = "";
+            let website = "";
+            let facebook = "";
+            let instagram = "";
+            let category = "";
 
-            if (businessElement) {
-                const nameSpan = businessElement.querySelector('span');
-                businessName = nameSpan ? nameSpan.textContent.trim() : "";
+            try {
+                const businessElement = document.querySelector('h2.qrShPb.pXs6bb.PZPZlf.q8U8x.aTI8gc.PPT5v');
+                if (businessElement) {
+                    const nameSpan = businessElement.querySelector('span');
+                    if (nameSpan) {
+                        businessName = normalizeText(nameSpan.textContent);
+                    }
+                }
+            } catch (e) {
+                console.error('Error extracting business name:', e);
             }
 
-            if (phoneElement) {
-                const phoneText = phoneElement.textContent;
-                // Extraindo apenas os números do texto
-                phoneNumber = phoneText.replace(/\D/g, '');
+            try {
+                const phoneElement = document.querySelector('a[data-dtype="d3ph"] span[aria-label]');
+                if (phoneElement) {
+                    const phoneText = phoneElement.textContent;
+                    phoneNumber = phoneText.replace(/\D/g, '');
+                }
+            } catch (e) {
+                console.error('Error extracting phone number:', e);
+            }
+
+            try {
+                const addressElement = document.querySelector('span.LrzXr');
+                if (addressElement) {
+                    address = normalizeText(addressElement.textContent);
+                }
+            } catch (e) {
+                console.error('Error extracting address:', e);
+            }
+
+            try {
+                const ratingElement = document.querySelector('span.yi40Hd.YrbPuc[aria-hidden="true"]');
+                if (ratingElement) {
+                    rating = ratingElement.textContent.trim();
+                }
+            } catch (e) {
+                console.error('Error extracting rating:', e);
+            }
+
+            try {
+                const reviewCountElement = document.querySelector('span.RDApEe.YrbPuc');
+                if (reviewCountElement) {
+                    reviewCount = reviewCountElement.textContent.replace(/\D/g, '');
+                }
+            } catch (e) {
+                console.error('Error extracting review count:', e);
+            }
+
+            try {
+                const websiteElement = document.querySelector('a.n1obkb');
+                if (websiteElement) {
+                    website = websiteElement.href;
+                }
+            } catch (e) {
+                console.error('Error extracting website link:', e);
+            }
+
+            try {
+                const facebookElement = document.querySelector('a[href*="facebook.com"]');
+                if (facebookElement) {
+                    facebook = facebookElement.href;
+                }
+            } catch (e) {
+                console.error('Error extracting Facebook link:', e);
+            }
+
+            try {
+                const instagramElement = document.querySelector('a[href*="instagram.com"]');
+                if (instagramElement) {
+                    instagram = instagramElement.href;
+                }
+            } catch (e) {
+                console.error('Error extracting Instagram link:', e);
+            }
+
+            try {
+                const categoryElement = document.querySelector('span.YhemCb');
+                if (categoryElement) {
+                    const categoryText = normalizeText(categoryElement.textContent);
+                    const categoryParts = categoryText.split(' em ');
+                    if (categoryParts.length > 1) {
+                        category = categoryParts[0];
+                    }
+                }
+            } catch (e) {
+                console.error('Error extracting category:', e);
             }
 
             return {
                 name: businessName,
-                phone: phoneNumber
+                phone: phoneNumber,
+                address: address,
+                rating: rating,
+                reviewCount: reviewCount,
+                website: website,
+                facebook: facebook,
+                instagram: instagram,
+                category: category
             };
         });
     } catch (e) {
         log.error('Error during scraping in getBusinessInfo:', e);
         return {
             name: "",
-            phone: ""
+            phone: "",
+            address: "",
+            rating: "",
+            reviewCount: "",
+            website: "",
+            facebook: "",
+            instagram: "",
+            category: ""
         };
     }
 };
