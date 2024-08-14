@@ -65,11 +65,11 @@ ipcMain.on('search', async (event, {term, location}) => {
     try {
         const mySearch = await createSearchForCities(term, location, "admin");
 
-        const selectedCities = await getCitiesByIds(location); // Usando o controller para buscar cidades pelos IDs
+        const selectedCities = await getCitiesByIds(location);
 
         const businessIds = [];
         for (const city of selectedCities) {
-            const searchTerm = removeAccents(term + "+em+" + city.nome).replace(/ /g, "+");
+            const searchTerm = removeAccents(term + "+em+" + city.nome + ", " + city.estado.sigla).replace(/ /g, "+");
             const result = await getDataFromSearch(searchTerm);
 
             for (const searchResult of result) {
