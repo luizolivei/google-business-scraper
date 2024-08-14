@@ -71,8 +71,34 @@ const markSearchAsCompleted = async (searchId) => {
     }
 };
 
+const getAllSearches = async () => {
+    try {
+        const searches = await Search.findAll({
+            include: [
+                {
+                    model: City,
+                    as: 'cities',
+                    through: { attributes: [] }
+                }
+            ],
+            order: [['createdAt', 'DESC']]
+        });
+
+        return searches.map(search => ({
+            id: search.id,
+            term: search.search,
+            createdAt: search.createdAt,
+            cities: search.cities.map(city => city.nome)
+        }));
+    } catch (error) {
+        console.error('Erro ao buscar todas as pesquisas:', error);
+        throw error;
+    }
+};
+
 module.exports = {
     getEnterprisesBySearch,
     createSearchForCities,
+    getAllSearches,
     markSearchAsCompleted
 };

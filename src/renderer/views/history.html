@@ -23,6 +23,8 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 800px;
+            max-height: 600px;
+            overflow-y: auto;
         }
 
         h1 {
@@ -54,27 +56,9 @@
 <body>
 <div class="container">
     <h1>Histórico de Pesquisas</h1>
-    <ul class="search-list" id="searchList">
-    </ul>
+    <ul class="search-list" id="searchList"></ul>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        window.electron.send('load-search-history');
-    });
-
-    window.electron.receive('search-history', (searches) => {
-        const searchList = document.getElementById('searchList');
-        searchList.innerHTML = '';
-
-        searches.forEach(search => {
-            const listItem = document.createElement('li');
-            listItem.innerHTML = `<span>ID:</span> ${search.id} <span>Termo:</span> ${search.term} <span>Data:</span> ${new Date(search.createdAt).toLocaleString()}`;
-            searchList.appendChild(listItem);
-        });
-    });
-</script>
-
-<script src="../render.js"></script>
+<script src="../renders/historyRender.js"></script>
 </body>
 </html>

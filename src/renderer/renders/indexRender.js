@@ -1,6 +1,29 @@
+// indexRender.js
 document.addEventListener('DOMContentLoaded', () => {
     window.electron.send('load-cities');
 });
+
+const searchButton = document.getElementById('searchButton');
+if (searchButton) {
+    searchButton.addEventListener('click', () => {
+        const termInput = document.getElementById('term');
+        const locationSelect = document.getElementById('location');
+
+        searchButton.disabled = true;
+        searchButton.textContent = 'Pesquisando...';
+
+        const term = termInput.value;
+        const selectedLocations = Array.from(locationSelect.selectedOptions).map(option => option.value);
+
+        termInput.value = '';
+        $('#location').val(null).trigger('change');
+
+        const resultsContainer = document.getElementById('results');
+        resultsContainer.innerHTML = '';
+
+        window.electron.send('search', { term, location: selectedLocations });
+    });
+}
 
 window.electron.receive('load-cities', (cities) => {
     if (cities.error) {
@@ -9,6 +32,7 @@ window.electron.receive('load-cities', (cities) => {
     }
 
     const locationSelect = document.getElementById('location');
+    if (!locationSelect) return;
 
     locationSelect.innerHTML = '';
 
@@ -25,33 +49,16 @@ window.electron.receive('load-cities', (cities) => {
     });
 });
 
-document.getElementById('searchButton').addEventListener('click', () => {
-    const searchButton = document.getElementById('searchButton');
-    const termInput = document.getElementById('term');
-    const locationSelect = document.getElementById('location');
-
-    searchButton.disabled = true;
-    searchButton.textContent = 'Pesquisando...';
-
-    const term = termInput.value;
-    const selectedLocations = Array.from(locationSelect.selectedOptions).map(option => option.value);
-
-    termInput.value = '';
-    $('#location').val(null).trigger('change');
-
-    const resultsContainer = document.getElementById('results');
-    resultsContainer.innerHTML = '';
-
-    window.electron.send('search', {term, location: selectedLocations});
-});
-
 window.electron.receive('search-results', (results) => {
     const searchButton = document.getElementById('searchButton');
-
-    searchButton.disabled = false;
-    searchButton.textContent = 'Pesquisar';
+    if (searchButton) {
+        searchButton.disabled = false;
+        searchButton.textContent = 'Pesquisar';
+    }
 
     const resultsContainer = document.getElementById('results');
+    if (!resultsContainer) return;
+
     resultsContainer.innerHTML = '';
 
     if (results.error) {
@@ -66,3 +73,10 @@ window.electron.receive('search-results', (results) => {
     successDiv.textContent = 'Pesquisa concluída com sucesso!';
     resultsContainer.appendChild(successDiv);
 });
+
+const openHistoryPageButton = document.getElementById('openHistoryPage');
+if (openHistoryPageButton) {
+    openHistoryPageButton.addEventListener('click', () => {
+        window.electron.send('open-history-page');
+    });
+}

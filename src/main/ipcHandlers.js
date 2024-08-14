@@ -6,6 +6,7 @@ const { saveBusinessInfo } = require('../app/controllers/businessController');
 const getDataFromSearch = require('../scripts/scraping/index.js');
 const removeAccents = require("../scripts/mixins/script");
 const { createHistoryWindow } = require("./window");
+const { getAllSearches } = require('../app/controllers/searchController');
 
 function setupIpcHandlers() {
     ipcMain.on('load-cities', async (event) => {
@@ -18,9 +19,6 @@ function setupIpcHandlers() {
     });
 
     ipcMain.on('search', async (event, { term, location }) => {
-        console.log("term", term);
-        console.log("location", location);
-
         try {
             const mySearch = await createSearchForCities(term, location, "admin");
             const selectedCities = await getCitiesByIds(location);
@@ -51,6 +49,21 @@ function setupIpcHandlers() {
     ipcMain.on('open-history-page', () => {
         createHistoryWindow();
     });
+
+        ipcMain.on('load-search-history', async (event) => {
+            try {
+                const searches = await getAllSearches();
+                event.sender.send('search-history', searches);
+            } catch (error) {
+                console.error('Erro ao carregar o histórico de pesquisas:', error);
+                event.sender.send('search-history', { error: 'Erro ao carregar o histórico de pesquisas' });
+            }
+        });
+
+    module.exports = {
+        setupIpcHandlers
+    };
+
 }
 
 module.exports = {

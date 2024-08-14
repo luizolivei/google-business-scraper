@@ -11,7 +11,7 @@ const saveBusinessInfo = async (businessInfo) => {
 
         if (existingBusiness) {
             console.log(`Empresa ${businessInfo.name} na página ${businessInfo.page} já existe no banco de dados.`);
-            return existingBusiness.id; // Retornar o ID do Business existente
+            return existingBusiness.id;
         }
 
         const newBusiness = await Business.create(businessInfo);

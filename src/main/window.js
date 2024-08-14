@@ -18,8 +18,8 @@ function createMainWindow() {
 
 function createHistoryWindow() {
     const newWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 900,
+        height: 650,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,

@@ -17,24 +17,19 @@ const getDataFromSearch = async (searchTerm) => {
 
         const baseFetchUrl = `https://www.google.com/search?client=opera-gx&tbm=lcl&q=${searchTerm}&rflfq=1&num=10`;
 
-        // let totalPages = await getMaxPage(page, baseFetchUrl);
-        // if (totalPages === 0) totalPages = 1
-
-        const totalPages = 1
+        let totalPages = await getMaxPage(page, baseFetchUrl);
+        if (totalPages === 0) totalPages = 1
 
         for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
-            console.log("Página ", pageIndex);
             const start = totalPages > 1 ? pageIndex * numberOfItensPerPage : 0;
             const pageFetchUrl = `${baseFetchUrl}&start=${start}`;
-            console.log("pageFetchUrl", pageFetchUrl);
             const businessIDs = await getBusinessIDs(page, pageFetchUrl);
             const businesses = [];
 
             for (const businessID of businessIDs) {
                 const businessInfoFetchUrl = `${baseFetchUrl}&start=${start}#rlfi=hd:;si:${businessID}`;
                 const businessInfo = await getBusinessInfo(page, businessInfoFetchUrl);
-                console.log("coletou ", businessInfo);
-                // await delay(Math.random() * (2000 - 1000) + 1000); // Atraso aleatório para evitar banimentos
+                await delay(Math.random() * (2000 - 1000) + 1000); // Atraso aleatório para evitar banimentos
                 businesses.push(businessInfo);
             }
 
@@ -46,8 +41,6 @@ const getDataFromSearch = async (searchTerm) => {
 
         await browser.close();
         log.info('Browser closed.');
-
-        console.log("Results: ", results);
         return results;
     } catch (e) {
         log.error('Error during scraping in scrapeGoogleBusiness:', e);
