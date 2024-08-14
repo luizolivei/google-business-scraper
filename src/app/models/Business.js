@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/database');
+const City = require('./City');
 
 const Business = sequelize.define('Business', {
     name: {
@@ -42,9 +43,18 @@ const Business = sequelize.define('Business', {
         type: DataTypes.INTEGER,
         allowNull: true,
     },
+    id_citie: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: City,
+            key: 'id',
+        }
+    },
 }, {
     tableName: 'businesses',
     timestamps: true,
 });
+
+Business.belongsTo(City, { foreignKey: 'id_citie' });
 
 module.exports = Business;

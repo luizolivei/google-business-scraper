@@ -8,9 +8,7 @@ const getBusinessInfo = require('./getBusinessInfo');
 
 const numberOfItensPerPage = 22;
 
-const getDataFromSearch = async () => {
-    const searchTerm = "floriculturas+em+blumenau";
-
+const getDataFromSearch = async (searchTerm) => {
     try {
         const results = [];
         const browser = await puppeteer.launch({executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe"});
@@ -19,12 +17,14 @@ const getDataFromSearch = async () => {
 
         const baseFetchUrl = `https://www.google.com/search?client=opera-gx&tbm=lcl&q=${searchTerm}&rflfq=1&num=10`;
 
-        // const totalPages = await getMaxPage(page, baseFetchUrl);
-        const totalPages = 1;
+        // let totalPages = await getMaxPage(page, baseFetchUrl);
+        // if (totalPages === 0) totalPages = 1
+
+        const totalPages = 1
 
         for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
             console.log("Página ", pageIndex);
-            const start = pageIndex * numberOfItensPerPage;
+            const start = totalPages > 1 ? pageIndex * numberOfItensPerPage : 0;
             const pageFetchUrl = `${baseFetchUrl}&start=${start}`;
             console.log("pageFetchUrl", pageFetchUrl);
             const businessIDs = await getBusinessIDs(page, pageFetchUrl);
@@ -34,7 +34,7 @@ const getDataFromSearch = async () => {
                 const businessInfoFetchUrl = `${baseFetchUrl}&start=${start}#rlfi=hd:;si:${businessID}`;
                 const businessInfo = await getBusinessInfo(page, businessInfoFetchUrl);
                 console.log("coletou ", businessInfo);
-                await delay(Math.random() * (2000 - 1000) + 1000); // Atraso aleatório para evitar banimentos
+                // await delay(Math.random() * (2000 - 1000) + 1000); // Atraso aleatório para evitar banimentos
                 businesses.push(businessInfo);
             }
 

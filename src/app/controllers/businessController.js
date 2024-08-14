@@ -6,32 +6,21 @@ const saveBusinessInfo = async (businessInfo) => {
             where: {
                 name: businessInfo.name,
                 address: businessInfo.address,
-                page: businessInfo.page  // Inclui a verificação de página
             }
         });
 
         if (existingBusiness) {
             console.log(`Empresa ${businessInfo.name} na página ${businessInfo.page} já existe no banco de dados.`);
-            return existingBusiness;
+            return existingBusiness.id; // Retornar o ID do Business existente
         }
 
-        const newBusiness = await Business.create({
-            name: businessInfo.name,
-            phone: businessInfo.phone,
-            address: businessInfo.address,
-            rating: businessInfo.rating,
-            reviewCount: businessInfo.reviewCount,
-            website: businessInfo.website,
-            facebook: businessInfo.facebook,
-            instagram: businessInfo.instagram,
-            category: businessInfo.category,
-            page: businessInfo.page,  // Salva a página
-        });
+        const newBusiness = await Business.create(businessInfo);
 
         console.log(`Empresa ${businessInfo.name} foi salva com sucesso na página ${businessInfo.page}.`);
-        return newBusiness;
+        return newBusiness.id;
     } catch (error) {
         console.error('Erro ao salvar as informações da empresa:', error);
+        throw error;
     }
 };
 

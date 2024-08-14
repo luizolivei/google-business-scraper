@@ -1,8 +1,12 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const {app, BrowserWindow, ipcMain} = require('electron');
 const path = require('path');
-const sequelize = require('../config/database');
 const getDataFromSearch = require('../scripts/scraping/index.js');
-const { saveBusinessInfo } = require('../app/controllers/businessController');
+const {saveBusinessInfo} = require('../app/controllers/businessController');
+const {createSearchForCities, markSearchAsCompleted} = require("../app/controllers/searchController");
+const {createSearchEnterpriseEntries} = require("../app/controllers/searchEnterpriseController");
+
+//todo obviamente nao acessar o modelo aqui, so para testes mesmo
+const City = require('../app/models/City');
 
 async function createWindow() {
     const mainWindow = new BrowserWindow({
@@ -17,14 +21,22 @@ async function createWindow() {
 
     mainWindow.loadFile('src/renderer/views/index.html');
 
-    // Sincronizar o banco de dados quando a janela principal é criada
-    try {
-        await sequelize.sync();
-        console.log('Banco de dados sincronizado com sucesso.');
-    } catch (error) {
-        console.error('Erro ao sincronizar com o banco de dados:', error);
-    }
+    mainWindow.webContents.on('did-finish-load', async () => {
+        try {
+            const cities = await City.findAll({
+                attributes: ['id', 'nome'],
+                order: [['nome', 'ASC']]
+            });
+            mainWindow.webContents.send('load-cities', cities);
+        } catch (error) {
+            console.error('Erro ao carregar as cidades:', error);
+        }
+    });
 }
+
+//sincroniza o banco para atualizar no cliente
+require('../scripts/database/syncTables');
+const removeAccents = require("../scripts/mixin/script");
 
 app.whenReady().then(createWindow);
 
@@ -40,26 +52,31 @@ app.on('activate', () => {
     }
 });
 
-ipcMain.on('search', async (event, { term, location }) => {
+ipcMain.on('search', async (event, {term, location}) => {
     console.log("term", term);
     console.log("location", location);
 
     try {
-        // Obter resultados da pesquisa (scraping)
-        const result = await getDataFromSearch();
+        let searchTerm = term + " em " + location;
+        const mySearch = await createSearchForCities(searchTerm, [5557, 5531], "jose")
+        searchTerm = removeAccents(searchTerm).replace(/ /g, "+"); //made for google search
+        const result = await getDataFromSearch(searchTerm);
+        const businessIds = [];
 
-        // Salvar cada resultado no banco de dados
         for (const searchResult of result) {
-        for (let business of searchResult["businesses"]) {
-            business["page"] = searchResult["page"]
-            await saveBusinessInfo(business);
-        }
+            for (let business of searchResult["businesses"]) {
+                business["page"] = searchResult["page"];
+                const businessId = await saveBusinessInfo(business);
+                businessIds.push(businessId);
+            }
         }
 
-        // Enviar os resultados para o renderer
+        await createSearchEnterpriseEntries(mySearch, businessIds);
+        await markSearchAsCompleted(mySearch)
+
         event.sender.send('search-results', result);
     } catch (error) {
         console.error('Erro ao processar a busca e salvar os dados:', error);
-        event.sender.send('search-results', { error: 'Erro ao processar a busca' });
+        event.sender.send('search-results', {error: 'Erro ao processar a busca'});
     }
 });
