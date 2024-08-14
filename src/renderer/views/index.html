@@ -1,23 +1,106 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data miner</title>
+    <title>Buscador de empresas</title>
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #term {
+            width: 600px !important;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        #location {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        .search-button {
+            width: 100%;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-button:hover {
+            background-color: #0056b3;
+        }
+
+        #results {
+            margin-top: 20px;
+        }
+
+        #results div {
+            background-color: #e9ecef;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-<h1>Mecanismo de busca</h1>
-<input type="text" id="term" placeholder="Termo">
-<select id="location" multiple>
-    <!-- As opções serão adicionadas aqui pelo JavaScript -->
-</select>
-<button id="searchButton">Pesquisar</button>
+<div class="container">
+    <h1>Buscador de empresas</h1>
+    <input type="text" id="term" placeholder="Termo de busca">
 
-<div id="results"></div>
+    <!-- Multi-select para cidades -->
+    <select id="location" multiple style="width: 100%;">
+        <!-- As opções serão adicionadas aqui pelo JavaScript -->
+    </select>
+
+    <button id="searchButton" class="search-button">Pesquisar</button>
+
+    <div id="results"></div>
+</div>
 
 <script>
     console.log('index.html loaded');
 </script>
+
+<!-- Script do render.js -->
 <script src="../render.js"></script>
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </body>
 </html>

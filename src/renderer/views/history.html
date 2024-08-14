@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Pesquisas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .search-list {
+            margin-top: 20px;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .search-list li {
+            background-color: #e9ecef;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .search-list li span {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Histórico de Pesquisas</h1>
+    <ul class="search-list" id="searchList">
+        <!-- A lista de pesquisas será carregada aqui via JavaScript -->
+    </ul>
+</div>
+
+<script>
+    // Exemplo de como você pode carregar os dados de histórico
+    document.addEventListener('DOMContentLoaded', () => {
+        window.electron.send('load-search-history');
+    });
+
+    window.electron.receive('search-history', (searches) => {
+        const searchList = document.getElementById('searchList');
+        searchList.innerHTML = ''; // Limpa a lista existente
+
+        searches.forEach(search => {
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `<span>ID:</span> ${search.id} <span>Termo:</span> ${search.term} <span>Data:</span> ${new Date(search.createdAt).toLocaleString()}`;
+            searchList.appendChild(listItem);
+        });
+    });
+</script>
+
+<!-- Script do render.js -->
+<script src="../render.js"></script>
+</body>
+</html>
