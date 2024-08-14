@@ -55,19 +55,17 @@
 <div class="container">
     <h1>Histórico de Pesquisas</h1>
     <ul class="search-list" id="searchList">
-        <!-- A lista de pesquisas será carregada aqui via JavaScript -->
     </ul>
 </div>
 
 <script>
-    // Exemplo de como você pode carregar os dados de histórico
     document.addEventListener('DOMContentLoaded', () => {
         window.electron.send('load-search-history');
     });
 
     window.electron.receive('search-history', (searches) => {
         const searchList = document.getElementById('searchList');
-        searchList.innerHTML = ''; // Limpa a lista existente
+        searchList.innerHTML = '';
 
         searches.forEach(search => {
             const listItem = document.createElement('li');
@@ -77,7 +75,6 @@
     });
 </script>
 
-<!-- Script do render.js -->
 <script src="../render.js"></script>
 </body>
 </html>

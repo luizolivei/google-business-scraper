@@ -1,9 +1,7 @@
-// Solicitar as cidades quando o documento estiver pronto
 document.addEventListener('DOMContentLoaded', () => {
     window.electron.send('load-cities');
 });
 
-// Recebe as cidades e popula o multi-select
 window.electron.receive('load-cities', (cities) => {
     if (cities.error) {
         console.error(cities.error);
@@ -28,9 +26,43 @@ window.electron.receive('load-cities', (cities) => {
 });
 
 document.getElementById('searchButton').addEventListener('click', () => {
-    const term = document.getElementById('term').value;
+    const searchButton = document.getElementById('searchButton');
+    const termInput = document.getElementById('term');
     const locationSelect = document.getElementById('location');
+
+    searchButton.disabled = true;
+    searchButton.textContent = 'Pesquisando...';
+
+    const term = termInput.value;
     const selectedLocations = Array.from(locationSelect.selectedOptions).map(option => option.value);
 
-    window.electron.send('search', { term, location: selectedLocations });
+    termInput.value = '';
+    $('#location').val(null).trigger('change');
+
+    const resultsContainer = document.getElementById('results');
+    resultsContainer.innerHTML = '';
+
+    window.electron.send('search', {term, location: selectedLocations});
+});
+
+window.electron.receive('search-results', (results) => {
+    const searchButton = document.getElementById('searchButton');
+
+    searchButton.disabled = false;
+    searchButton.textContent = 'Pesquisar';
+
+    const resultsContainer = document.getElementById('results');
+    resultsContainer.innerHTML = '';
+
+    if (results.error) {
+        const errorDiv = document.createElement('div');
+        errorDiv.classList.add('error');
+        errorDiv.textContent = 'Erro ao processar a busca.';
+        resultsContainer.appendChild(errorDiv);
+        return;
+    }
+
+    const successDiv = document.createElement('div');
+    successDiv.textContent = 'Pesquisa concluída com sucesso!';
+    resultsContainer.appendChild(successDiv);
 });
