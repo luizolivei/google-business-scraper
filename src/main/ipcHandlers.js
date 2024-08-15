@@ -8,6 +8,7 @@ const removeAccents = require("../scripts/mixins/script");
 const {createHistoryWindow} = require("./window");
 const {getAllSearches} = require('../app/controllers/searchController');
 const {generateExcelFile} = require("../scripts/excelGenerator");
+const log = require('electron-log');
 
 function setupIpcHandlers() {
     ipcMain.on('load-cities', async (event) => {
@@ -42,7 +43,7 @@ function setupIpcHandlers() {
 
             event.sender.send('search-results', {success: true});
         } catch (error) {
-            console.error('Erro ao processar a busca e salvar os dados:', error);
+            log.error('Erro ao processar a busca e salvar os dados:', error);
             event.sender.send('search-results', {error: 'Erro ao processar a busca'});
         }
     });
@@ -56,7 +57,7 @@ function setupIpcHandlers() {
             const searches = await getAllSearches();
             event.sender.send('search-history', searches);
         } catch (error) {
-            console.error('Erro ao carregar o histórico de pesquisas:', error);
+            log.error('Erro ao carregar o histórico de pesquisas:', error);
             event.sender.send('search-history', {error: 'Erro ao carregar o histórico de pesquisas'});
         }
     });
@@ -70,7 +71,7 @@ function setupIpcHandlers() {
             event.sender.send('download-ready', { filePath });
 
         } catch (error) {
-            console.error('Erro ao gerar o arquivo Excel:', error);
+            log.error('Erro ao gerar o arquivo Excel:', error);
             event.sender.send('download-ready', { error: 'Erro ao gerar o arquivo Excel' });
         }
     });

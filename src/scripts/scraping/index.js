@@ -6,7 +6,7 @@ const getMaxPage = require('./getMaxPage');
 const getBusinessIDs = require('./getBusinessIDs');
 const getBusinessInfo = require('./getBusinessInfo');
 
-const numberOfItensPerPage = 22;
+const numberOfItensPerPage = 20;
 
 const getDataFromSearch = async (searchTerm) => {
     try {
@@ -18,11 +18,14 @@ const getDataFromSearch = async (searchTerm) => {
         const baseFetchUrl = `https://www.google.com/search?client=opera-gx&tbm=lcl&q=${searchTerm}&rflfq=1&num=10`;
 
         let totalPages = await getMaxPage(page, baseFetchUrl);
-        if (totalPages === 0) totalPages = 1
+        if (totalPages === 0) totalPages = 1;
 
         for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
-            const start = totalPages > 1 ? pageIndex * numberOfItensPerPage : 0;
+            // Cálculo do start com incremento de 20 por página, começando da página 1
+            const start = pageIndex * numberOfItensPerPage + (pageIndex > 2 ? 20 : 0);
+
             const pageFetchUrl = `${baseFetchUrl}&start=${start}`;
+            console.log("page fetch ", pageFetchUrl)
             const businessIDs = await getBusinessIDs(page, pageFetchUrl);
             const businesses = [];
 

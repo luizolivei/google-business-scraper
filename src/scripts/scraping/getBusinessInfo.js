@@ -30,7 +30,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     }
                 }
             } catch (e) {
-                console.error('Error extracting business name:', e);
+                log.error('Error extracting business name:', e);
             }
 
             try {
@@ -40,7 +40,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     phoneNumber = phoneText.replace(/\D/g, '');
                 }
             } catch (e) {
-                console.error('Error extracting phone number:', e);
+                log.error('Error extracting phone number:', e);
             }
 
             try {
@@ -49,7 +49,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     address = normalizeText(addressElement.textContent);
                 }
             } catch (e) {
-                console.error('Error extracting address:', e);
+                log.error('Error extracting address:', e);
             }
 
             try {
@@ -58,7 +58,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     rating = ratingElement.textContent.trim();
                 }
             } catch (e) {
-                console.error('Error extracting rating:', e);
+                log.error('Error extracting rating:', e);
             }
 
             try {
@@ -67,7 +67,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     reviewCount = reviewCountElement.textContent.replace(/\D/g, '');
                 }
             } catch (e) {
-                console.error('Error extracting review count:', e);
+                log.error('Error extracting review count:', e);
             }
 
             try {
@@ -76,7 +76,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     website = websiteElement.href;
                 }
             } catch (e) {
-                console.error('Error extracting website link:', e);
+                log.error('Error extracting website link:', e);
             }
 
             try {
@@ -85,7 +85,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     facebook = facebookElement.href;
                 }
             } catch (e) {
-                console.error('Error extracting Facebook link:', e);
+                log.error('Error extracting Facebook link:', e);
             }
 
             try {
@@ -94,7 +94,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     instagram = instagramElement.href;
                 }
             } catch (e) {
-                console.error('Error extracting Instagram link:', e);
+                log.error('Error extracting Instagram link:', e);
             }
 
             try {
@@ -107,7 +107,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     }
                 }
             } catch (e) {
-                console.error('Error extracting category:', e);
+                log.error('Error extracting category:', e);
             }
 
             return {

@@ -1,4 +1,5 @@
 const sequelize = require('../../config/database');
+const log = require('electron-log');
 
 require('../../app/models/Search');
 require('../../app/models/City');
@@ -8,8 +9,8 @@ require('../../app/models/Business');
 
 sequelize.sync({alter: true})
     .then(() => {
-        console.log('Banco de dados sincronizado');
+        log.info('Banco de dados sincronizado');
     })
     .catch((error) => {
-        console.error('Erro ao sincronizar o banco de dados:', error);
+        log.error('Erro ao sincronizar o banco de dados:', error);
     });

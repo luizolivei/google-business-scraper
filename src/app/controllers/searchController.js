@@ -3,6 +3,7 @@ const Business = require('../models/Business');
 const City = require('../models/City');
 const SearchCity = require('../models/SearchCity');
 const sequelize = require('../../config/database');
+const log = require('electron-log');
 
 const getEnterprisesBySearch = async (searchTerm) => {
     try {
@@ -21,7 +22,7 @@ const getEnterprisesBySearch = async (searchTerm) => {
         });
         return enterprises;
     } catch (error) {
-        console.error("Erro ao buscar empresas por termo de busca:", error);
+        log.error("Erro ao buscar empresas por termo de busca:", error);
         throw error;
     }
 };
@@ -43,11 +44,11 @@ const createSearchForCities = async (searchTerm, cityIds, userName) => {
 
         await SearchCity.bulkCreate(searchCityEntries);
 
-        console.log(`Busca "${searchTerm}" foi criada com sucesso para as cidades de IDs: ${cityIds.join(', ')}`);
+        log.info(`Busca "${searchTerm}" foi criada com sucesso para as cidades de IDs: ${cityIds.join(', ')}`);
 
         return newSearch.id;
     } catch (error) {
-        console.error('Erro ao criar a busca:', error);
+        log.error('Erro ao criar a busca:', error);
         throw error;
     }
 };
@@ -57,17 +58,17 @@ const markSearchAsCompleted = async (searchId) => {
         const search = await Search.findByPk(searchId);
 
         if (!search) {
-            console.log(`Busca com ID ${searchId} não encontrada.`);
+            log.info(`Busca com ID ${searchId} não encontrada.`);
             return null;
         }
 
         search.completed = true;
         await search.save();
 
-        console.log(`Busca com ID ${searchId} foi marcada como completada.`);
+        log.info(`Busca com ID ${searchId} foi marcada como completada.`);
         return search;
     } catch (error) {
-        console.error('Erro ao atualizar a busca:', error);
+        log.error('Erro ao atualizar a busca:', error);
         throw error;
     }
 };
@@ -104,7 +105,7 @@ const getAllSearches = async () => {
             cities: search.cities.split(', ')
         }));
     } catch (error) {
-        console.error('Erro ao buscar todas as pesquisas:', error);
+        log.error('Erro ao buscar todas as pesquisas:', error);
         throw error;
     }
 };

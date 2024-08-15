@@ -1,4 +1,5 @@
 const SearchEnterprise = require('../models/SearchEnterprise');
+const log = require('electron-log');
 
 const createSearchEnterpriseEntries = async (searchId, businessIds) => {
     try {
@@ -15,13 +16,13 @@ const createSearchEnterpriseEntries = async (searchId, businessIds) => {
                     id_search: searchId,
                     id_enterprise: businessId
                 });
-                console.log(`Associação entre search ID ${searchId} e business ID ${businessId} foi criada com sucesso.`);
+                log.info(`Associação entre search ID ${searchId} e business ID ${businessId} foi criada com sucesso.`);
             } else {
-                console.log(`Associação entre search ID ${searchId} e business ID ${businessId} já existe. Pulando...`);
+                log.info(`Associação entre search ID ${searchId} e business ID ${businessId} já existe. Pulando...`);
             }
         }
     } catch (error) {
-        console.error('Erro ao criar associações em search_enterprises:', error);
+        log.error('Erro ao criar associações em search_enterprises:', error);
         throw error;
     }
 };
