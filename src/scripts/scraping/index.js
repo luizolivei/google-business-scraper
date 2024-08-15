@@ -20,19 +20,20 @@ const getDataFromSearch = async (searchTerm) => {
         let totalPages = await getMaxPage(page, baseFetchUrl);
         if (totalPages === 0) totalPages = 1;
 
+        log.info("Paginas ", totalPages)
+
         for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
-            // Cálculo do start com incremento de 20 por página, começando da página 1
             const start = pageIndex * numberOfItensPerPage + (pageIndex > 2 ? 20 : 0);
 
             const pageFetchUrl = `${baseFetchUrl}&start=${start}`;
-            console.log("page fetch ", pageFetchUrl)
+            log.info("Busca ", pageFetchUrl)
             const businessIDs = await getBusinessIDs(page, pageFetchUrl);
             const businesses = [];
 
             for (const businessID of businessIDs) {
                 const businessInfoFetchUrl = `${baseFetchUrl}&start=${start}#rlfi=hd:;si:${businessID}`;
                 const businessInfo = await getBusinessInfo(page, businessInfoFetchUrl);
-                await delay(Math.random() * (2000 - 1000) + 1000); // Atraso aleatório para evitar banimentos
+                await delay(Math.random() * (1000 - 500) + 500); // Atraso aleatório para evitar banimentos
                 businesses.push(businessInfo);
             }
 

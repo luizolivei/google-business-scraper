@@ -27,12 +27,14 @@ function setupIpcHandlers() {
 
             const businessIds = [];
             for (const city of selectedCities) {
-                const searchTerm = removeAccents(`${term}+em+${city.nome},+${city.estado.sigla}`).replace(/ /g, "+");
+                const searchTerm = removeAccents(`${term}+em+${city.nome}%2C+${city.estado.sigla}`).replace(/ /g, "+");
                 const result = await getDataFromSearch(searchTerm);
 
                 for (const searchResult of result) {
-                    for (let business of searchResult["businesses"]) {
+                    for (const [index, business] of searchResult["businesses"].entries()) {
                         business["page"] = searchResult["page"];
+                        business["order"] = index + 1;
+
                         const businessId = await saveBusinessInfo(business);
                         businessIds.push(businessId);
                     }

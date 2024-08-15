@@ -2,11 +2,10 @@ const log = require('electron-log');
 
 const getBusinessInfo = async (page, fetchUrl) => {
     try {
-        await page.goto(fetchUrl, {waitUntil: 'networkidle2'});
-        await page.waitForSelector('h2.qrShPb.pXs6bb.PZPZlf.q8U8x.aTI8gc.PPT5v', {timeout: 10000});
+        await page.goto(fetchUrl, { waitUntil: 'networkidle2' });
+        await page.waitForSelector('h2.qrShPb.pXs6bb.PZPZlf.q8U8x.aTI8gc.PPT5v', { timeout: 10000 });
 
         return await page.evaluate(() => {
-            // Função para normalizar os textos, removendo problemas com caracteres acentuados
             const normalizeText = (text) => {
                 return text.normalize('NFD').replace(/[\u0300-\u036f]/g, "").trim();
             };
@@ -15,7 +14,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
             let phoneNumber = "";
             let address = "";
             let rating = "";
-            let reviewCount = "";
+            let reviewCount = 0;  // Inicializa como 0 para garantir que seja um número
             let website = "";
             let facebook = "";
             let instagram = "";
@@ -53,21 +52,20 @@ const getBusinessInfo = async (page, fetchUrl) => {
             }
 
             try {
-                const ratingElement = document.querySelector('span.yi40Hd.YrbPuc[aria-hidden="true"]');
-                if (ratingElement) {
-                    rating = ratingElement.textContent.trim();
-                }
-            } catch (e) {
-                log.error('Error extracting rating:', e);
-            }
+                const ratingContainer = document.querySelector('div.TLYLSe.MaBy9');
+                if (ratingContainer) {
+                    const ratingElement = ratingContainer.querySelector('span.yi40Hd.YrbPuc[aria-hidden="true"]');
+                    if (ratingElement) {
+                        rating = ratingElement.textContent.trim();
+                    }
 
-            try {
-                const reviewCountElement = document.querySelector('span.RDApEe.YrbPuc');
-                if (reviewCountElement) {
-                    reviewCount = reviewCountElement.textContent.replace(/\D/g, '');
+                    const reviewCountElement = ratingContainer.querySelector('span.RDApEe.YrbPuc');
+                    if (reviewCountElement) {
+                        reviewCount = parseInt(reviewCountElement.textContent.replace(/\D/g, ''), 10);
+                    }
                 }
             } catch (e) {
-                log.error('Error extracting review count:', e);
+                log.error('Error extracting rating or review count:', e);
             }
 
             try {
@@ -115,7 +113,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
                 phone: phoneNumber,
                 address: address,
                 rating: rating,
-                reviewCount: reviewCount,
+                reviewCount: isNaN(reviewCount) ? 0 : reviewCount,  // Garante que reviewCount seja um inteiro
                 website: website,
                 facebook: facebook,
                 instagram: instagram,
@@ -129,7 +127,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
             phone: "",
             address: "",
             rating: "",
-            reviewCount: "",
+            reviewCount: 0,  // Retorna 0 se ocorrer algum erro
             website: "",
             facebook: "",
             instagram: "",
