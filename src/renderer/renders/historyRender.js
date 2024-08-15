@@ -38,3 +38,17 @@ window.electron.receive('search-history', (searches) => {
         searchList.appendChild(listItem);
     });
 });
+
+window.electron.receive('download-ready', ({ filePath, error }) => {
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    const link = document.createElement('a');
+    link.href = `file://${filePath}`;
+    link.download = `busca_empresas.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});

@@ -1,5 +1,5 @@
 const Business = require('../models/Business');
-const SearchEnterprise = require('../models/SearchEnterprise');
+const sequelize = require('../../config/database');
 
 const saveBusinessInfo = async (businessInfo) => {
     try {
@@ -27,12 +27,30 @@ const saveBusinessInfo = async (businessInfo) => {
 
 const getBusinessesBySearch = async (searchId) => {
     try {
-        const businesses = await Business.findAll({
-            include: [{
-                model: SearchEnterprise,
-                where: { id_search: searchId },
-                attributes: []
-            }]
+        const query = `
+            SELECT 
+                b.id, 
+                b.name, 
+                b.phone, 
+                b.address, 
+                b.rating, 
+                b."reviewCount", 
+                b.website, 
+                b.facebook, 
+                b.instagram, 
+                b.category, 
+                b.page 
+            FROM 
+                businesses b
+            JOIN 
+                search_enterprises se ON se.id_enterprise = b.id
+            WHERE 
+                se.id_search = :searchId
+        `;
+
+        const businesses = await sequelize.query(query, {
+            type: sequelize.QueryTypes.SELECT,
+            replacements: { searchId }
         });
 
         return businesses;
