@@ -78,6 +78,7 @@ const getAllSearches = async () => {
             `SELECT 
                 s.id as search_id, 
                 s.search as term, 
+                s.completed as completed, 
                 s."createdAt" as created_at, 
                 string_agg(c.nome, ', ') as cities
             FROM 
@@ -98,6 +99,7 @@ const getAllSearches = async () => {
         return searches.map(search => ({
             id: search.search_id,
             term: search.term,
+            completed: search.completed,
             createdAt: search.created_at,
             cities: search.cities.split(', ')
         }));

@@ -1,12 +1,9 @@
-// historyRender.js
 document.addEventListener('DOMContentLoaded', () => {
     window.electron.send('load-search-history');
 });
 
 window.electron.receive('search-history', (searches) => {
     const searchList = document.getElementById('searchList');
-    if (!searchList) return;
-
     searchList.innerHTML = '';
 
     if (searches.error) {
@@ -18,9 +15,26 @@ window.electron.receive('search-history', (searches) => {
 
     searches.forEach(search => {
         const listItem = document.createElement('li');
-        listItem.innerHTML = `<span>Termo:</span> ${search.term}
-                              <span>Data:</span> ${new Date(search.createdAt).toLocaleString()}
-                              <span>Cidades:</span> ${search.cities.join(', ')}`;
+
+        listItem.innerHTML = `
+            <div>
+                <span>Termo:</span> ${search.term}
+                <span>Data:</span> ${new Date(search.createdAt).toLocaleString()}
+                <span>Cidades:</span> ${search.cities.join(', ')}
+            </div>
+            <div class="search-actions">
+                ${search.completed ?
+            '<button class="download-button">Baixar</button>' :
+            '<span class="search-status">Incompleto</span>'}
+            </div>
+        `;
+
+        if (search.completed) {
+            listItem.querySelector('.download-button').addEventListener('click', () => {
+                window.electron.send('download-search', search.id);
+            });
+        }
+
         searchList.appendChild(listItem);
     });
 });

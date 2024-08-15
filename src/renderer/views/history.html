@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f0f2f5;
             margin: 0;
             padding: 0;
             display: flex;
@@ -17,39 +17,76 @@
         }
 
         .container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 800px;
-            max-height: 600px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 900px;
             overflow-y: auto;
         }
 
         h1 {
             text-align: center;
-            color: #333;
+            color: #4a4a4a;
+            margin-bottom: 20px;
+            font-size: 28px;
         }
 
         .search-list {
-            margin-top: 20px;
             list-style-type: none;
             padding: 0;
+            margin: 0;
         }
 
         .search-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             background-color: #e9ecef;
-            padding: 10px;
+            padding: 15px;
             margin-bottom: 10px;
-            border-radius: 5px;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 16px;
             color: #333;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-list li:hover {
+            background-color: #d6d8db;
         }
 
         .search-list li span {
             font-weight: bold;
-            margin-right: 10px;
+            color: #555;
+        }
+
+        .search-status {
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 5px;
+            background-color: #ffcccb;
+            color: #a94442;
+        }
+
+        .search-status.complete {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .download-button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .download-button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>

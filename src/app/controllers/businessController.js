@@ -1,4 +1,5 @@
 const Business = require('../models/Business');
+const SearchEnterprise = require('../models/SearchEnterprise');
 
 const saveBusinessInfo = async (businessInfo) => {
     try {
@@ -24,6 +25,24 @@ const saveBusinessInfo = async (businessInfo) => {
     }
 };
 
+const getBusinessesBySearch = async (searchId) => {
+    try {
+        const businesses = await Business.findAll({
+            include: [{
+                model: SearchEnterprise,
+                where: { id_search: searchId },
+                attributes: []
+            }]
+        });
+
+        return businesses;
+    } catch (error) {
+        console.error('Erro ao buscar empresas pela pesquisa:', error);
+        throw error;
+    }
+};
+
 module.exports = {
     saveBusinessInfo,
+    getBusinessesBySearch,
 };
