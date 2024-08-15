@@ -17,7 +17,7 @@ window.electron.receive('search-history', (searches) => {
         const listItem = document.createElement('li');
 
         listItem.innerHTML = `
-            <div>
+            <div class="search-info">
                 <span>Termo:</span> ${search.term}
                 <span>Data:</span> ${new Date(search.createdAt).toLocaleString()}
                 <span>Cidades:</span> ${search.cities.join(', ')}

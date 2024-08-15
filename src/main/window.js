@@ -5,6 +5,7 @@ function createMainWindow() {
     const mainWindow = new BrowserWindow({
         width: 1280,
         height: 768,
+        autoHideMenuBar: true,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
@@ -20,6 +21,7 @@ function createHistoryWindow() {
     const newWindow = new BrowserWindow({
         width: 900,
         height: 650,
+        autoHideMenuBar: true,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
