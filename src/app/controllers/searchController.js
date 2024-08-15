@@ -2,6 +2,7 @@ const Search = require('../models/Search');
 const Business = require('../models/Business');
 const City = require('../models/City');
 const SearchCity = require('../models/SearchCity');
+const sequelize = require('../../config/database');
 
 const getEnterprisesBySearch = async (searchTerm) => {
     try {
@@ -73,29 +74,38 @@ const markSearchAsCompleted = async (searchId) => {
 
 const getAllSearches = async () => {
     try {
-        const searches = await Search.findAll({
-            include: [
-                {
-                    model: City,
-                    as: 'cities',
-                    through: { attributes: [] }
-                }
-            ],
-            order: [['createdAt', 'DESC']]
-        });
+        const searches = await sequelize.query(
+            `SELECT 
+                s.id as search_id, 
+                s.search as term, 
+                s."createdAt" as created_at, 
+                string_agg(c.nome, ', ') as cities
+            FROM 
+                searches s
+            JOIN 
+                search_cities sc ON s.id = sc.id_search
+            JOIN 
+                cidades c ON sc.id_citie = c.id
+            GROUP BY 
+                s.id
+            ORDER BY 
+                s."createdAt" DESC`,
+            {
+                type: sequelize.QueryTypes.SELECT
+            }
+        );
 
         return searches.map(search => ({
-            id: search.id,
-            term: search.search,
-            createdAt: search.createdAt,
-            cities: search.cities.map(city => city.nome)
+            id: search.search_id,
+            term: search.term,
+            createdAt: search.created_at,
+            cities: search.cities.split(', ')
         }));
     } catch (error) {
         console.error('Erro ao buscar todas as pesquisas:', error);
         throw error;
     }
 };
-
 module.exports = {
     getEnterprisesBySearch,
     createSearchForCities,
