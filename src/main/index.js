@@ -44,7 +44,8 @@ app.whenReady().then(() => {
         promptForDbConfig();
     } else {
         const { initializeDatabase } = require('../config/database');
-        initializeDatabase(dbConfig); // Inicializa o banco de dados com a configuração existente
+        initializeDatabase(dbConfig);
+        require('../scripts/database/syncTables');
         const { setupIpcHandlers } = require('./ipcHandlers');
         createMainWindow();
         setupIpcHandlers();
