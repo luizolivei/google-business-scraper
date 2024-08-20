@@ -11,7 +11,14 @@ function initializeDatabase(dbConfig) {
         host: dbConfig.host,
         dialect: 'postgres',
         logging: false,
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false,
+            }
+        }
     });
+
 
     module.exports = sequelize;
 }
