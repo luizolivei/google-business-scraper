@@ -1,26 +1,12 @@
 const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const fs = require('fs');
-const { createMainWindow } = require('./window');
+const { createMainWindow, createDBConfigWindow } = require('./window');
 
 const configPath = path.join(app.getPath('userData'), 'dbConfig.json');
 
 function promptForDbConfig() {
-    const promptWindow = new BrowserWindow({
-        width: 450,
-        height: 500,
-        resizable: false,
-        autoHideMenuBar: true,
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false
-        }
-    });
-
-    promptWindow.loadFile('src/renderer/views/dbConfig.html');
-    promptWindow.on('closed', () => {
-        app.quit();
-    });
+    promptWindow = createDBConfigWindow()
 
     const { ipcMain } = require('electron');
     ipcMain.on('save-db-config', (event, config) => {
@@ -38,6 +24,11 @@ function loadDbConfig() {
 }
 
 app.whenReady().then(() => {
+    if (process.platform === 'win32')
+    {
+        app.setAppUserModelId(app.name);
+    }
+
     const dbConfig = loadDbConfig();
 
     if (!dbConfig) {

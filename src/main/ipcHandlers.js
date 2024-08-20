@@ -9,6 +9,7 @@ const {createHistoryWindow} = require("./window");
 const {getAllSearches} = require('../app/controllers/searchController');
 const {generateExcelFile} = require("../scripts/excelGenerator");
 const log = require('electron-log');
+const { Notification } = require('electron');
 
 function setupIpcHandlers() {
     ipcMain.on('load-cities', async (event) => {
@@ -43,10 +44,19 @@ function setupIpcHandlers() {
             await createSearchEnterpriseEntries(mySearch, businessIds);
             await markSearchAsCompleted(mySearch);
 
+            new Notification({
+                title: 'Busca finalizada!',
+                body: `Sua pesquisa sobre ${term} foi finalizada`,
+            }).show();
+
             event.sender.send('search-results', {success: true});
         } catch (error) {
-            log.error('Erro ao processar a busca e salvar os dados:', error);
             event.sender.send('search-results', {error: 'Erro ao processar a busca'});
+            log.error('Erro ao processar a busca e salvar os dados:', error);
+            new Notification({
+                title: 'Erro na pesquisa',
+                body: error,
+            }).show();
         }
     });
 

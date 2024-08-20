@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/database');
 const City = require('./City');
+const log = require('electron-log');
 
 const Business = sequelize.define('Business', {
     name: {
@@ -60,5 +61,40 @@ const Business = sequelize.define('Business', {
 });
 
 Business.belongsTo(City, { foreignKey: 'id_citie' });
+
+Business.getBusinessesBySearch = async function(searchId) {
+    try {
+        const query = `
+            SELECT 
+                b.id, 
+                b.name, 
+                b.phone, 
+                b.address, 
+                b.rating, 
+                b."reviewCount", 
+                b.website, 
+                b.facebook, 
+                b.instagram, 
+                b.category, 
+                b.page 
+            FROM 
+                businesses b
+            JOIN 
+                search_enterprises se ON se.id_enterprise = b.id
+            WHERE 
+                se.id_search = :searchId
+        `;
+
+        const businesses = await sequelize.query(query, {
+            type: sequelize.QueryTypes.SELECT,
+            replacements: { searchId }
+        });
+
+        return businesses;
+    } catch (error) {
+        log.error('Erro ao buscar empresas pela pesquisa:', error);
+        throw error;
+    }
+};
 
 module.exports = Business;

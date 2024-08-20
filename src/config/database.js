@@ -7,16 +7,17 @@ const log = require('electron-log');
 const configPath = path.join(app.getPath('userData'), 'dbConfig.json');
 
 function initializeDatabase(dbConfig) {
+    //todo descomentar isso ein!!!
     const sequelize = new Sequelize(dbConfig.name, dbConfig.user, dbConfig.password, {
         host: dbConfig.host,
         dialect: 'postgres',
         logging: false,
-        dialectOptions: {
-            ssl: {
-                require: true,
-                rejectUnauthorized: false,
-            }
-        }
+        // dialectOptions: {
+        //     ssl: {
+        //         require: true,
+        //         rejectUnauthorized: false,
+        //     }
+        // }
     });
 
 
