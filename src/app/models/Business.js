@@ -85,23 +85,27 @@ Business.belongsTo(City, { foreignKey: 'id_citie' });
 Business.getBusinessesBySearch = async function(searchId) {
     try {
         const query = `
-            SELECT 
-                b.id, 
-                b.name, 
-                b.phone, 
-                b.address, 
-                b.rating, 
-                b."reviewCount", 
-                b.website, 
-                b.facebook, 
-                b.instagram, 
-                b.category, 
-                b.page 
-            FROM 
+            SELECT
+                b.id,
+                b.name,
+                b.phone,
+                b.address,
+                b.rating,
+                b."reviewCount",
+                b.website,
+                b.facebook,
+                b.instagram,
+                b.category,
+                b.page,
+                b."order",
+                b.description,
+                b.compromissos,
+                b.city_name
+            FROM
                 businesses b
-            JOIN 
+                    JOIN
                 search_enterprises se ON se.id_enterprise = b.id
-            WHERE 
+            WHERE
                 se.id_search = :searchId
         `;
 
