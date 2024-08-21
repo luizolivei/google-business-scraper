@@ -54,7 +54,7 @@
             font-size: 16px;
         }
 
-        #location {
+        #location, #titles {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -108,6 +108,10 @@
         .div-limiter {
             width: 477px;
         }
+
+        .space-between-options {
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -121,7 +125,12 @@
         <input type="text" id="term" placeholder="Termo de busca">
     </div>
 
-    <select id="location" multiple></select>
+    <div class="space-between-options">
+        <select id="location" multiple></select>
+    </div>
+    <div class="space-between-options">
+        <select id="titles"></select>
+    </div>
 
     <button id="searchButton" class="search-button">Pesquisar</button>
     <button id="openHistoryPage" class="history-button">Visualizar excels gerados</button>

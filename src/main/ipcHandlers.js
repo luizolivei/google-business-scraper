@@ -1,6 +1,7 @@
 const {ipcMain} = require('electron');
 const log = require('electron-log');
 const {getAllCities, getCitiesByIds} = require('../app/controllers/cityController');
+const {getAllTitles} = require('../app/controllers/tituloController');
 const {createSearchForCities, markSearchAsCompleted} = require("../app/controllers/searchController");
 const {createSearchEnterpriseEntries} = require('../app/controllers/searchEnterpriseController');
 const {saveBusinessInfo, getBusinessesBySearch} = require('../app/controllers/businessController');
@@ -21,7 +22,16 @@ function setupIpcHandlers() {
         }
     });
 
-    ipcMain.on('search', async (event, {term, location}) => {
+    ipcMain.on('load-titles', async (event) => { // Novo handler para carregar os títulos
+        try {
+            const titles = await getAllTitles();
+            event.sender.send('load-titles', titles);
+        } catch (error) {
+            event.sender.send('load-titles', {error: 'Erro ao carregar os títulos'});
+        }
+    });
+
+    ipcMain.on('search', async (event, {term, location, title}) => { // Recebe os títulos selecionados
         try {
             const mySearch = await createSearchForCities(term, location, "admin");
             const selectedCities = await getCitiesByIds(location);
@@ -37,6 +47,7 @@ function setupIpcHandlers() {
                         business["order"] = index + 1;
                         business["id_citie"] = city.id
                         business["city_name"] = city.nome
+                        business["id_title"] = title
 
                         const businessId = await saveBusinessInfo(business);
                         businessIds.push(businessId);

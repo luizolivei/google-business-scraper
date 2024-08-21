@@ -7,7 +7,7 @@ require('../../app/models/SearchCity');
 require('../../app/models/SearchEnterprise');
 require('../../app/models/Business');
 
-sequelize.sync({alter: true})
+sequelize.sync({ alter: true, force: false })
     .then(() => {
         log.info('Banco de dados sincronizado');
     })
