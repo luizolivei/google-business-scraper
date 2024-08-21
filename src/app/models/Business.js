@@ -25,15 +25,15 @@ const Business = sequelize.define('Business', {
         allowNull: true,
     },
     website: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true,
     },
     facebook: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true,
     },
     instagram: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true,
     },
     category: {
@@ -60,6 +60,10 @@ const Business = sequelize.define('Business', {
         allowNull: true,
     },
     description: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    schedule: {
         type: DataTypes.TEXT,
         allowNull: true,
     },

@@ -20,7 +20,8 @@ const getBusinessInfo = async (page, fetchUrl) => {
                 instagram: "",
                 category: "",
                 compromissos: "",
-                description : ""
+                description: "",
+                schedule: ""
             };
         }
 
@@ -41,7 +42,8 @@ const getBusinessInfo = async (page, fetchUrl) => {
             let instagram = "";
             let category = "";
             let compromissos = "";
-            let description  = "";
+            let description = "";
+            let schedule = "";
 
             try {
                 const businessElement = document.querySelector('h2.qrShPb.pXs6bb.PZPZlf.q8U8x.aTI8gc.PPT5v');
@@ -149,6 +151,22 @@ const getBusinessInfo = async (page, fetchUrl) => {
                 log.error('Error extracting description:', e);
             }
 
+            try {
+                const scheduleElement = document.querySelector('table.WgFkxc');
+                if (scheduleElement) {
+                    const rows = scheduleElement.querySelectorAll('tr');
+                    const scheduleArray = [];
+                    rows.forEach(row => {
+                        const day = normalizeText(row.querySelector('td.SKNSIb').textContent);
+                        const hours = normalizeText(row.querySelectorAll('td')[1].textContent);
+                        scheduleArray.push(`${day}: ${hours}`);
+                    });
+                    schedule = scheduleArray.join(', ');
+                }
+            } catch (e) {
+                log.error('Error extracting schedule:', e);
+            }
+
             return {
                 name: businessName,
                 phone: phoneNumber,
@@ -159,8 +177,9 @@ const getBusinessInfo = async (page, fetchUrl) => {
                 facebook: facebook,
                 instagram: instagram,
                 compromissos: compromissos,
-                description : description ,
-                category: category
+                description: description,
+                category: category,
+                schedule: schedule
             };
         });
     } catch (e) {
@@ -176,7 +195,8 @@ const getBusinessInfo = async (page, fetchUrl) => {
             instagram: "",
             compromissos: "",
             description: "",
-            category: ""
+            category: "",
+            schedule: ""
         };
     }
 };
