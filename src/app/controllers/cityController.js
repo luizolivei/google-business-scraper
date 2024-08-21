@@ -25,7 +25,7 @@ const getCitiesByIds = async (ids) => {
             where: {
                 id: ids
             },
-            attributes: ['id', 'nome'],
+            attributes: ['id', 'nome', 'codigo_ibge'],
             include: {
                 model: State,
                 as: 'estado',

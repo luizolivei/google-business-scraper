@@ -6,24 +6,24 @@ const getBusinessInfo = async (page, fetchUrl) => {
 
         await page.goto(fetchUrl, { waitUntil: 'networkidle2' });
 
-        const currentUrl = page.url();
-        if (currentUrl !== fetchUrl) {
-            log.error('URL mismatch: expected', fetchUrl, 'but got', currentUrl);
-            return {
-                name: "",
-                phone: "",
-                address: "",
-                rating: "",
-                reviewCount: 0,
-                website: "",
-                facebook: "",
-                instagram: "",
-                category: "",
-                compromissos: "",
-                description: "",
-                schedule: ""
-            };
-        }
+        // const currentUrl = page.url();
+        // if (currentUrl !== fetchUrl) {
+        //     log.error('URL mismatch: expected', fetchUrl, 'but got', currentUrl);
+        //     return {
+        //         name: "",
+        //         phone: "",
+        //         address: "",
+        //         rating: "",
+        //         reviewCount: 0,
+        //         website: "",
+        //         facebook: "",
+        //         instagram: "",
+        //         category: "",
+        //         compromissos: "",
+        //         description: "",
+        //         schedule: ""
+        //     };
+        // }
 
         await page.waitForSelector('h2.qrShPb.pXs6bb.PZPZlf.q8U8x.aTI8gc.PPT5v', { timeout: 10000 });
 
@@ -143,9 +143,26 @@ const getBusinessInfo = async (page, fetchUrl) => {
             }
 
             try {
-                const descriptionElement = document.querySelector('div[style="margin:0 16px 12px"] > div:last-child');
+                // Primeira tentativa: Buscar o texto entre aspas duplas na div com jsname="EvNWZc"
+                const descriptionElement = document.querySelector('div[jsname="EvNWZc"]');
                 if (descriptionElement) {
-                    description = normalizeText(descriptionElement.textContent);
+                    const descriptionText = descriptionElement.textContent;
+                    const match = descriptionText.match(/"(.*?)"/); // Regex para capturar o texto entre aspas duplas
+                    if (match && match[1]) {
+                        description = normalizeText(match[1]);
+                    }
+                }
+
+                // Segunda tentativa: Se a primeira não encontrar nada, buscar na nova estrutura
+                if (!description) {
+                    const altDescriptionElement = document.querySelector('div[data-hveid][style="margin:0 16px 12px"]');
+                    if (altDescriptionElement) {
+                        const altDescriptionText = altDescriptionElement.textContent;
+                        const altMatch = altDescriptionText.match(/"(.*?)"/); // Regex para capturar o texto entre aspas duplas
+                        if (altMatch && altMatch[1]) {
+                            description = normalizeText(altMatch[1]);
+                        }
+                    }
                 }
             } catch (e) {
                 log.error('Error extracting description:', e);

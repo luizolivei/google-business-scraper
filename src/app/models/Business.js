@@ -48,6 +48,10 @@ const Business = sequelize.define('Business', {
         type: DataTypes.INTEGER,
         allowNull: true,
     },
+    codigo_ibge: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
     id_citie: {
         type: DataTypes.INTEGER,
         references: {

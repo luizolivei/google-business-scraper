@@ -65,8 +65,8 @@ window.electron.receive('load-titles', (titles) => {
 
     titles.forEach(title => {
         const option = document.createElement('option');
-        option.value = title.id;
-        option.textContent = title.descricao;
+        option.value = title.Id;
+        option.textContent = title.Descricao;
         titlesSelect.appendChild(option);
     });
 

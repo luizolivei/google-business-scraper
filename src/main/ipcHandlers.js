@@ -46,6 +46,7 @@ function setupIpcHandlers() {
                         business["page"] = searchResult["page"];
                         business["order"] = index + 1;
                         business["id_citie"] = city.id
+                        business["codigo_ibge"] = city.codigo_ibge
                         business["city_name"] = city.nome
                         business["id_title"] = title
 

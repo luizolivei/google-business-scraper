@@ -2,7 +2,10 @@ const log = require('electron-log');
 
 const getBusinessIDs = async (page, fetchUrl) => {
     try {
-        await page.goto(fetchUrl, {waitUntil: 'networkidle2'});
+        await page.goto(fetchUrl, { waitUntil: 'networkidle2' });
+
+        await page.waitForSelector('div[jsname="jXK9ad"]', { timeout: 10000 });
+
         return await page.evaluate(() => {
             const businessIDs = [];
             const businessCards = document.querySelectorAll('a.vwVdIc.wzN8Ac.rllt__link.a-no-hover-decoration');
