@@ -59,6 +59,10 @@ const Business = sequelize.define('Business', {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    description: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     city_name: {
         type: DataTypes.STRING,
         allowNull: true,

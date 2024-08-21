@@ -19,7 +19,8 @@ const getBusinessInfo = async (page, fetchUrl) => {
                 facebook: "",
                 instagram: "",
                 category: "",
-                compromissos: ""
+                compromissos: "",
+                description : ""
             };
         }
 
@@ -40,6 +41,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
             let instagram = "";
             let category = "";
             let compromissos = "";
+            let description  = "";
 
             try {
                 const businessElement = document.querySelector('h2.qrShPb.pXs6bb.PZPZlf.q8U8x.aTI8gc.PPT5v');
@@ -138,6 +140,15 @@ const getBusinessInfo = async (page, fetchUrl) => {
                 log.error('Error extracting category:', e);
             }
 
+            try {
+                const descriptionElement = document.querySelector('div[style="margin:0 16px 12px"] > div:last-child');
+                if (descriptionElement) {
+                    description = normalizeText(descriptionElement.textContent);
+                }
+            } catch (e) {
+                log.error('Error extracting description:', e);
+            }
+
             return {
                 name: businessName,
                 phone: phoneNumber,
@@ -148,6 +159,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
                 facebook: facebook,
                 instagram: instagram,
                 compromissos: compromissos,
+                description : description ,
                 category: category
             };
         });
@@ -163,6 +175,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
             facebook: "",
             instagram: "",
             compromissos: "",
+            description: "",
             category: ""
         };
     }

@@ -36,8 +36,7 @@ const getDataFromSearch = async (searchTerm) => {
                 if (businessInfo.name)
                     businesses.push(businessInfo);
 
-                // todo voltar delay
-                // await delay(Math.random() * (1000 - 500) + 500); // Atraso aleatório para evitar banimentos
+                await delay(Math.random() * (1000 - 500) + 500); // Atraso aleatório para evitar banimentos
             }
 
             results.push({
