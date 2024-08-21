@@ -2,7 +2,27 @@ const log = require('electron-log');
 
 const getBusinessInfo = async (page, fetchUrl) => {
     try {
+        await page.goto('about:blank');
+
         await page.goto(fetchUrl, { waitUntil: 'networkidle2' });
+
+        const currentUrl = page.url();
+        if (currentUrl !== fetchUrl) {
+            log.error('URL mismatch: expected', fetchUrl, 'but got', currentUrl);
+            return {
+                name: "",
+                phone: "",
+                address: "",
+                rating: "",
+                reviewCount: 0,
+                website: "",
+                facebook: "",
+                instagram: "",
+                category: "",
+                compromissos: ""
+            };
+        }
+
         await page.waitForSelector('h2.qrShPb.pXs6bb.PZPZlf.q8U8x.aTI8gc.PPT5v', { timeout: 10000 });
 
         return await page.evaluate(() => {
@@ -14,11 +34,12 @@ const getBusinessInfo = async (page, fetchUrl) => {
             let phoneNumber = "";
             let address = "";
             let rating = "";
-            let reviewCount = 0;  // Inicializa como 0 para garantir que seja um número
+            let reviewCount = 0;
             let website = "";
             let facebook = "";
             let instagram = "";
             let category = "";
+            let compromissos = "";
 
             try {
                 const businessElement = document.querySelector('h2.qrShPb.pXs6bb.PZPZlf.q8U8x.aTI8gc.PPT5v');
@@ -96,6 +117,15 @@ const getBusinessInfo = async (page, fetchUrl) => {
             }
 
             try {
+                const compromissosElement = document.querySelector('a.xFAlBc');
+                if (compromissosElement) {
+                    compromissos = compromissosElement.href;
+                }
+            } catch (e) {
+                log.error('Error extracting compromissos:', e);
+            }
+
+            try {
                 const categoryElement = document.querySelector('span.YhemCb');
                 if (categoryElement) {
                     const categoryText = normalizeText(categoryElement.textContent);
@@ -113,10 +143,11 @@ const getBusinessInfo = async (page, fetchUrl) => {
                 phone: phoneNumber,
                 address: address,
                 rating: rating,
-                reviewCount: isNaN(reviewCount) ? 0 : reviewCount,  // Garante que reviewCount seja um inteiro
+                reviewCount: isNaN(reviewCount) ? 0 : reviewCount,
                 website: website,
                 facebook: facebook,
                 instagram: instagram,
+                compromissos: compromissos,
                 category: category
             };
         });
@@ -127,10 +158,11 @@ const getBusinessInfo = async (page, fetchUrl) => {
             phone: "",
             address: "",
             rating: "",
-            reviewCount: 0,  // Retorna 0 se ocorrer algum erro
+            reviewCount: 0,
             website: "",
             facebook: "",
             instagram: "",
+            compromissos: "",
             category: ""
         };
     }

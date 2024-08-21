@@ -33,8 +33,11 @@ const getDataFromSearch = async (searchTerm) => {
             for (const businessID of businessIDs) {
                 const businessInfoFetchUrl = `${baseFetchUrl}&start=${start}#rlfi=hd:;si:${businessID}`;
                 const businessInfo = await getBusinessInfo(page, businessInfoFetchUrl);
-                await delay(Math.random() * (1000 - 500) + 500); // Atraso aleatório para evitar banimentos
-                businesses.push(businessInfo);
+                if (businessInfo.name)
+                    businesses.push(businessInfo);
+
+                // todo voltar delay
+                // await delay(Math.random() * (1000 - 500) + 500); // Atraso aleatório para evitar banimentos
             }
 
             results.push({

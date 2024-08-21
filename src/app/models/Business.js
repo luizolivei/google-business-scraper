@@ -55,6 +55,18 @@ const Business = sequelize.define('Business', {
             key: 'id',
         }
     },
+    compromissos: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    city_name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    processed: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+    },
 }, {
     tableName: 'businesses',
     timestamps: true,

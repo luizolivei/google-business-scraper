@@ -27,10 +27,22 @@
             max-width: 500px;
         }
 
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            width: 36px;
+            height: 36px;
+            margin-right: 3px;
+        }
+
         h1 {
             font-size: 24px;
             color: #333;
-            margin-bottom: 20px;
+            margin: 0;
         }
 
         #term {
@@ -100,16 +112,19 @@
 </head>
 <body>
 <div class="container">
-    <h1>Buscador de Empresas</h1>
+    <div class="header">
+        <img src="../../../assets/icons/icon-no-bg.png" alt="Ícone do Buscador de Empresas">
+        <h1>Buscador de Empresas</h1>
+    </div>
 
     <div class="div-limiter">
         <input type="text" id="term" placeholder="Termo de busca">
     </div>
 
-        <select id="location" multiple></select>
+    <select id="location" multiple></select>
 
-        <button id="searchButton" class="search-button">Pesquisar</button>
-        <button id="openHistoryPage" class="history-button">Visualizar excels gerados</button>
+    <button id="searchButton" class="search-button">Pesquisar</button>
+    <button id="openHistoryPage" class="history-button">Visualizar excels gerados</button>
 
     <div id="results"></div>
 </div>

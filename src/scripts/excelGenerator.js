@@ -1,7 +1,6 @@
 const ExcelJS = require('exceljs');
 const path = require('path');
 const os = require('os');
-const fs = require('fs');
 
 const generateExcelFile = async (businesses, searchId) => {
     const workbook = new ExcelJS.Workbook();

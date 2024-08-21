@@ -16,7 +16,6 @@
   "license": "MIT",
   "build": {
     "appId": "none.com",
-    "name": "Buscador de empresas",
     "productName": "Buscador de empresas",
     "files": [
       "src/**/*",

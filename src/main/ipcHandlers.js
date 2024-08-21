@@ -1,4 +1,5 @@
 const {ipcMain} = require('electron');
+const log = require('electron-log');
 const {getAllCities, getCitiesByIds} = require('../app/controllers/cityController');
 const {createSearchForCities, markSearchAsCompleted} = require("../app/controllers/searchController");
 const {createSearchEnterpriseEntries} = require('../app/controllers/searchEnterpriseController');
@@ -8,7 +9,6 @@ const removeAccents = require("../scripts/mixins/script");
 const {createHistoryWindow} = require("./window");
 const {getAllSearches} = require('../app/controllers/searchController');
 const {generateExcelFile} = require("../scripts/excelGenerator");
-const log = require('electron-log');
 const { Notification } = require('electron');
 
 function setupIpcHandlers() {
@@ -35,6 +35,8 @@ function setupIpcHandlers() {
                     for (const [index, business] of searchResult["businesses"].entries()) {
                         business["page"] = searchResult["page"];
                         business["order"] = index + 1;
+                        business["id_citie"] = city.id
+                        business["city_name"] = city.nome
 
                         const businessId = await saveBusinessInfo(business);
                         businessIds.push(businessId);

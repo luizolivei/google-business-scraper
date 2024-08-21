@@ -8,6 +8,8 @@ const saveBusinessInfo = async (businessInfo) => {
             where: {
                 name: businessInfo.name,
                 address: businessInfo.address,
+                page: businessInfo.page,
+                order: businessInfo.order,
             }
         });
 
@@ -21,7 +23,7 @@ const saveBusinessInfo = async (businessInfo) => {
         log.info(`Empresa ${businessInfo.name} foi salva com sucesso na página ${businessInfo.page}.`);
         return newBusiness.id;
     } catch (error) {
-        log.error('Erro ao salvar as informações da empresa:', error);
+        log.error('[saveBusinessInfo] Erro ao salvar as informações da empresa:', error);
         throw error;
     }
 };
