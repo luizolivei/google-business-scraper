@@ -106,9 +106,13 @@ Business.getBusinessesBySearch = async function(searchId) {
                 b.category,
                 b.page,
                 b."order",
-                b.description,
+                b.codigo_ibge,
+                b.id_citie,
                 b.compromissos,
-                b.city_name
+                b.description,
+                b.schedule,
+                b.city_name,
+                b.id_title
             FROM
                 businesses b
                     JOIN
@@ -128,5 +132,4 @@ Business.getBusinessesBySearch = async function(searchId) {
         throw error;
     }
 };
-
 module.exports = Business;

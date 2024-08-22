@@ -1,9 +1,9 @@
 const log = require('electron-log');
+const moveMouseRandomly = require("./moveMouseRandomly");
 
 const getBusinessInfo = async (page, fetchUrl) => {
     try {
         await page.goto('about:blank');
-
         await page.goto(fetchUrl, { waitUntil: 'networkidle2' });
 
         // const currentUrl = page.url();
@@ -25,7 +25,15 @@ const getBusinessInfo = async (page, fetchUrl) => {
         //     };
         // }
 
+        if (Math.random() < 0.3) {
+            await moveMouseRandomly(page);
+        }
+
         await page.waitForSelector('h2.qrShPb.pXs6bb.PZPZlf.q8U8x.aTI8gc.PPT5v', { timeout: 10000 });
+
+        if (Math.random() < 0.7) {
+            await moveMouseRandomly(page);
+        }
 
         return await page.evaluate(() => {
             const normalizeText = (text) => {

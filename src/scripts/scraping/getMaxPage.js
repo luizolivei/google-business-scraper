@@ -8,6 +8,8 @@ const getMaxPage = async (page, fetchUrl) => {
 
         while (hasMorePages) {
             const fetchUrlWithPage = `${fetchUrl}&start=${maxPage * numberOfItensPerPage}`;
+            log.info("fetchUrlWithPage ", fetchUrlWithPage)
+
             await page.goto(fetchUrlWithPage, { waitUntil: 'networkidle2' });
 
             const pageSearch = await page.evaluate(() => {
