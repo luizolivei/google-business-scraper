@@ -11,12 +11,12 @@ function initializeDatabase(dbConfig) {
         host: dbConfig.host,
         dialect: 'postgres',
         logging: false,
-        dialectOptions: {
-            ssl: {
-                require: true,
-                rejectUnauthorized: false,
-            }
-        }
+        // dialectOptions: {
+        //     ssl: {
+        //         require: true,
+        //         rejectUnauthorized: false,
+        //     }
+        // }
     });
 
 

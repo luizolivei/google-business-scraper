@@ -1,41 +1,22 @@
-const log = require('electron-log');
 const moveMouseRandomly = require("./moveMouseRandomly");
 
 const getBusinessInfo = async (page, fetchUrl) => {
     try {
+        //ir para uma pagina em branco so para apagar o cache
         await page.goto('about:blank');
-        await page.goto(fetchUrl, { waitUntil: 'networkidle2' });
-
-        // const currentUrl = page.url();
-        // if (currentUrl !== fetchUrl) {
-        //     log.error('URL mismatch: expected', fetchUrl, 'but got', currentUrl);
-        //     return {
-        //         name: "",
-        //         phone: "",
-        //         address: "",
-        //         rating: "",
-        //         reviewCount: 0,
-        //         website: "",
-        //         facebook: "",
-        //         instagram: "",
-        //         category: "",
-        //         compromissos: "",
-        //         description: "",
-        //         schedule: ""
-        //     };
-        // }
+        await page.goto(fetchUrl, {waitUntil: 'networkidle2'});
 
         if (Math.random() < 0.3) {
             await moveMouseRandomly(page);
         }
 
-        await page.waitForSelector('h2.qrShPb.pXs6bb.PZPZlf.q8U8x.aTI8gc.PPT5v', { timeout: 10000 });
+        await page.waitForSelector('h2.qrShPb.pXs6bb.PZPZlf.q8U8x.aTI8gc.PPT5v', {timeout: 10000});
 
         if (Math.random() < 0.7) {
             await moveMouseRandomly(page);
         }
 
-        return await page.evaluate(() => {
+        return await page.evaluate(async () => {
             const normalizeText = (text) => {
                 return text.normalize('NFD').replace(/[\u0300-\u036f]/g, "").trim();
             };
@@ -52,6 +33,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
             let compromissos = "";
             let description = "";
             let schedule = "";
+            let gallery = [];
 
             try {
                 const businessElement = document.querySelector('h2.qrShPb.pXs6bb.PZPZlf.q8U8x.aTI8gc.PPT5v');
@@ -62,7 +44,11 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     }
                 }
             } catch (e) {
-                log.error('Error extracting business name:', e);
+                return {
+                    error: true,
+                    message: 'Error extracting business name:', e,
+                    data: {}
+                };
             }
 
             try {
@@ -72,7 +58,11 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     phoneNumber = phoneText.replace(/\D/g, '');
                 }
             } catch (e) {
-                log.error('Error extracting phone number:', e);
+                return {
+                    error: true,
+                    message: 'Error extracting phone number:', e,
+                    data: {}
+                };
             }
 
             try {
@@ -81,7 +71,11 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     address = normalizeText(addressElement.textContent);
                 }
             } catch (e) {
-                log.error('Error extracting address:', e);
+                return {
+                    error: true,
+                    message: 'Error extracting address:', e,
+                    data: {}
+                };
             }
 
             try {
@@ -98,7 +92,11 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     }
                 }
             } catch (e) {
-                log.error('Error extracting rating or review count:', e);
+                return {
+                    error: true,
+                    message: 'Error extracting rating or review count:', e,
+                    data: {}
+                };
             }
 
             try {
@@ -107,7 +105,11 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     website = websiteElement.href;
                 }
             } catch (e) {
-                log.error('Error extracting website link:', e);
+                return {
+                    error: true,
+                    message: 'Error extracting website link:', e,
+                    data: {}
+                };
             }
 
             try {
@@ -116,7 +118,11 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     facebook = facebookElement.href;
                 }
             } catch (e) {
-                log.error('Error extracting Facebook link:', e);
+                return {
+                    error: true,
+                    message: 'Error extracting Facebook link:', e,
+                    data: {}
+                };
             }
 
             try {
@@ -125,7 +131,11 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     instagram = instagramElement.href;
                 }
             } catch (e) {
-                log.error('Error extracting Instagram link:', e);
+                return {
+                    error: true,
+                    message: 'Error extracting Instagram link:', e,
+                    data: {}
+                };
             }
 
             try {
@@ -134,7 +144,11 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     compromissos = compromissosElement.href;
                 }
             } catch (e) {
-                log.error('Error extracting compromissos:', e);
+                return {
+                    error: true,
+                    message: 'Error extracting compromissos:', e,
+                    data: {}
+                };
             }
 
             try {
@@ -147,10 +161,15 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     }
                 }
             } catch (e) {
-                log.error('Error extracting category:', e);
+                return {
+                    error: true,
+                    message: 'Error extracting category:', e,
+                    data: {}
+                };
             }
 
             try {
+                // Por algum motivo o google decidiu colocar esse texto de duas formas diferentes nos cards dos anuncios
                 // Primeira tentativa: Buscar o texto entre aspas duplas na div com jsname="EvNWZc"
                 const descriptionElement = document.querySelector('div[jsname="EvNWZc"]');
                 if (descriptionElement) {
@@ -173,7 +192,11 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     }
                 }
             } catch (e) {
-                log.error('Error extracting description:', e);
+                return {
+                    error: true,
+                    message: 'Error extracting description:', e,
+                    data: {}
+                };
             }
 
             try {
@@ -189,39 +212,78 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     schedule = scheduleArray.join(', ');
                 }
             } catch (e) {
-                log.error('Error extracting schedule:', e);
+                return {
+                    error: true,
+                    message: 'Error extracting schedule:', e,
+                    data: {}
+                };
+            }
+
+            try {
+                const galleryButtonSelector = 'button.llfsGb.KJY1Gc';
+                const galleryDivSelector = '.DLfiPc';
+                const galleryLinkSelector = 'a[jscontroller="pU86Hd"][jsaction="ebq3Kd; clickonly:ebq3Kd;"]';
+
+                // Clica no botão de galeria
+                const galleryButton = document.querySelector(galleryButtonSelector);
+                if (galleryButton) {
+                    galleryButton.click();
+                }
+
+                // Espera a div com a classe 'DLfiPc' carregar
+                await new Promise((resolve) => {
+                    const observer = new MutationObserver((mutations, obs) => {
+                        if (document.querySelector(galleryDivSelector)) {
+                            obs.disconnect();
+                            resolve();
+                        }
+                    });
+                    observer.observe(document, {
+                        childList: true,
+                        subtree: true,
+                    });
+                });
+
+                // Captura apenas os links <a> com os atributos específicos
+                const galleryLinks = document.querySelectorAll(galleryLinkSelector);
+                galleryLinks.forEach(link => {
+                    if (link.href) {
+                        gallery.push(link.href);
+                    }
+                });
+            } catch (e) {
+                return {
+                    error: true,
+                    message: 'Error extracting gallery:', e,
+                    data: {}
+                };
             }
 
             return {
-                name: businessName,
-                phone: phoneNumber,
-                address: address,
-                rating: rating,
-                reviewCount: isNaN(reviewCount) ? 0 : reviewCount,
-                website: website,
-                facebook: facebook,
-                instagram: instagram,
-                compromissos: compromissos,
-                description: description,
-                category: category,
-                schedule: schedule
+                error: false,
+                message: "Scrapping do anuncio realizado com sucesso",
+                data: {
+                    name: businessName,
+                    phone: phoneNumber,
+                    address: address,
+                    rating: rating,
+                    reviewCount: isNaN(reviewCount) ? 0 : reviewCount,
+                    website: website,
+                    facebook: facebook,
+                    instagram: instagram,
+                    compromissos: compromissos,
+                    description: description,
+                    category: category,
+                    schedule: schedule,
+                    gallery: gallery
+                }
             };
         });
     } catch (e) {
-        log.error('Error during scraping in getBusinessInfo:', e);
         return {
-            name: "",
-            phone: "",
-            address: "",
-            rating: "",
-            reviewCount: 0,
-            website: "",
-            facebook: "",
-            instagram: "",
-            compromissos: "",
-            description: "",
-            category: "",
-            schedule: ""
+            error: true,
+            message: 'Error during scraping in getBusinessInfo:', e,
+            data: {}
         };
     }
 };

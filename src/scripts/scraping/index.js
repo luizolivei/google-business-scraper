@@ -16,6 +16,7 @@ const getDataFromSearch = async (searchTerm) => {
         const page = await browser.newPage();
         await page.setRequestInterception(true);
         await page.setUserAgent(randomUserAgent());
+        //ignora esses tipos de request para nao ficar gastando ram atoa
         page.on('request', (request) => {
             if (['image', 'stylesheet', 'font', 'media'].includes(request.resourceType())) {
                 request.abort();
@@ -32,7 +33,7 @@ const getDataFromSearch = async (searchTerm) => {
         log.info("Paginas ", totalPages)
 
         for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
-            //caso a pagina seja um multiplo de 5 o sistema espera 5 minutos para continuar
+            //caso a pagina seja um multiplo de 5 o sistema espera 5 minutos para continuar; Isso evita bans
             if ((pageIndex + 1) % 5 === 0) {
                 log.info(`Esperando 5 minutos antes de prosseguir para a próxima página...`);
                 await delay(300000);
@@ -44,18 +45,22 @@ const getDataFromSearch = async (searchTerm) => {
             log.info("Busca ", pageFetchUrl)
             const businessIDs = await getBusinessIDs(page, pageFetchUrl);
 
+            //30% de chance de mover o mouse na tela durante essa passada
             if (Math.random() < 0.3) {
                 await moveMouseRandomly(page);
             }
 
             const businesses = [];
-
             for (const businessID of businessIDs) {
                 const businessInfoFetchUrl = `${baseFetchUrl}&start=${start}#rlfi=hd:;si:${businessID}`;
-                const businessInfo = await getBusinessInfo(page, businessInfoFetchUrl);
-                if (businessInfo.name) {
-                    log.info("Coletou a empresa ", businessInfo.name)
-                    businesses.push(businessInfo);
+                const scrapingResponse = await getBusinessInfo(page, businessInfoFetchUrl);
+                if (scrapingResponse.error) {
+                    log.error(scrapingResponse.message)
+                    continue
+                }
+                if (scrapingResponse.data.name) {
+                    log.info("Coletou a empresa ", scrapingResponse.data.name)
+                    businesses.push(scrapingResponse.data);
                 }
 
                 await delay(Math.random() * (15000 - 5000) + 5000);
