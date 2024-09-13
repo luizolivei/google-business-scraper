@@ -83,6 +83,10 @@ const Business = sequelize.define('Business', {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
+    gallery3d: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
 }, {
     tableName: 'businesses',
     timestamps: true,
@@ -112,7 +116,8 @@ Business.getBusinessesBySearch = async function(searchId) {
                 b.description,
                 b.schedule,
                 b.city_name,
-                b.id_title
+                b.id_title,
+                b.gallery3d
             FROM
                 businesses b
                     JOIN

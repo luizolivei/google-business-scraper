@@ -33,7 +33,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
             let compromissos = "";
             let description = "";
             let schedule = "";
-            let gallery = [];
+            let gallery3d = "";
 
             try {
                 const businessElement = document.querySelector('h2.qrShPb.pXs6bb.PZPZlf.q8U8x.aTI8gc.PPT5v');
@@ -230,7 +230,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     galleryButton.click();
                 }
 
-                // Espera a div com a classe 'DLfiPc' carregar
+                // Espera a div com a classe 'DLfiPc' carregar (é a box das imagens da galeria aberta)
                 await new Promise((resolve) => {
                     const observer = new MutationObserver((mutations, obs) => {
                         if (document.querySelector(galleryDivSelector)) {
@@ -244,17 +244,16 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     });
                 });
 
-                // Captura apenas os links <a> com os atributos específicos
                 const galleryLinks = document.querySelectorAll(galleryLinkSelector);
-                galleryLinks.forEach(link => {
-                    if (link.href) {
-                        gallery.push(link.href);
-                    }
-                });
+                const filteredLinks = Array.from(galleryLinks)
+                    .map(link => link.href)
+                    .filter(href => href.startsWith('https://www.google.com/local/place/fid/'));
+
+                gallery3d = filteredLinks.join(', ');
             } catch (e) {
                 return {
                     error: true,
-                    message: 'Error extracting gallery:', e,
+                    message: 'Error extracting and filtering gallery links:', e,
                     data: {}
                 };
             }
@@ -275,7 +274,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
                     description: description,
                     category: category,
                     schedule: schedule,
-                    gallery: gallery
+                    gallery3d: gallery3d
                 }
             };
         });

@@ -25,6 +25,7 @@ const generateExcelFile = async (businesses, searchId) => {
         { header: 'Descrição', key: 'description', width: 40 },
         { header: 'Horário', key: 'schedule', width: 40 },
         { header: 'Título ID', key: 'id_title', width: 20 },
+        { header: 'Imagens 3D', key: 'gallery3d', width: 100 },
     ];
 
     // Aplicar negrito nas headers

@@ -1,5 +1,4 @@
 const Business = require('../models/Business');
-const sequelize = require('../../config/database');
 const log = require('electron-log');
 
 const saveBusinessInfo = async (businessInfo) => {
