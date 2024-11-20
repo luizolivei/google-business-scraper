@@ -6,7 +6,7 @@ const Search = sequelize.define('Search', {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    user_name: {
+    user: {
         type: DataTypes.STRING,
     },
     completed: {

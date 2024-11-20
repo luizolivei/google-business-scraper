@@ -38,7 +38,7 @@ function createHistoryWindow() {
 function createDBConfigWindow() {
     const promptWindow = new BrowserWindow({
         width: 450,
-        height: 500,
+        height: 520,
         resizable: false,
         autoHideMenuBar: true,
         icon: path.join(__dirname, '../../assets/icons/icon.ico'),

@@ -16,6 +16,7 @@ const getDataFromSearch = async (searchTerm) => {
         const page = await browser.newPage();
         await page.setRequestInterception(true);
         await page.setUserAgent(randomUserAgent());
+
         //ignora esses tipos de request para nao ficar gastando ram atoa
         page.on('request', (request) => {
             if (['image', 'stylesheet', 'font', 'media'].includes(request.resourceType())) {

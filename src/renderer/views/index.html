@@ -54,7 +54,7 @@
             font-size: 16px;
         }
 
-        #location, #titles {
+        .simple-select {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
@@ -110,7 +110,7 @@
         }
 
         .space-between-options {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -122,14 +122,21 @@
     </div>
 
     <div class="div-limiter">
-        <input type="text" id="term" placeholder="Termo de busca">
+        <label for="term">Termo a ser buscado:</label>
+        <input type="text" id="term" placeholder="Descreva o tipo de empresa">
     </div>
 
     <div class="space-between-options">
-        <select id="location" multiple></select>
+        <label for="term">Cidades:</label>
+        <select id="location" class="simple-select" multiple></select>
     </div>
     <div class="space-between-options">
-        <select id="titles"></select>
+        <label for="term">Titulo:</label>
+        <select id="titles" class="simple-select"></select>
+    </div>
+    <div class="space-between-options">
+        <label for="term">Usuário:</label>
+        <select id="users" class="simple-select"></select>
     </div>
 
     <button id="searchButton" class="search-button">Pesquisar</button>

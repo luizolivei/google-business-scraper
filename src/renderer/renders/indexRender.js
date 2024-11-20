@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     window.electron.send('load-cities');
-    window.electron.send('load-titles'); // Envie o pedido para carregar os títulos
+    window.electron.send('load-titles');
+    window.electron.send('load-users');
 });
 
 const searchButton = document.getElementById('searchButton');
@@ -8,7 +9,8 @@ if (searchButton) {
     searchButton.addEventListener('click', () => {
         const termInput = document.getElementById('term');
         const locationSelect = document.getElementById('location');
-        const titlesSelect = document.getElementById('titles'); // Referência ao novo select
+        const titlesSelect = document.getElementById('titles');
+        const usersSelect = document.getElementById('users');
 
         searchButton.disabled = true;
         searchButton.textContent = 'Pesquisando...';
@@ -16,15 +18,22 @@ if (searchButton) {
         const term = termInput.value;
         const selectedLocations = Array.from(locationSelect.selectedOptions).map(option => option.value);
         const selectedTitle = titlesSelect.value;
+        const selectedUser = usersSelect.value;
 
         termInput.value = '';
         $('#location').val(null).trigger('change');
         $('#titles').val(null).trigger('change');
+        $('#users').val(null).trigger('change');
 
         const resultsContainer = document.getElementById('results');
         resultsContainer.innerHTML = '';
 
-        window.electron.send('search', { term, location: selectedLocations, title: selectedTitle });
+        window.electron.send('search', {
+            term,
+            location: selectedLocations,
+            title: selectedTitle,
+            user: selectedUser
+        });
     });
 }
 
@@ -63,6 +72,13 @@ window.electron.receive('load-titles', (titles) => {
 
     titlesSelect.innerHTML = '';
 
+    const placeholderOption = document.createElement('option');
+    placeholderOption.value = '';
+    placeholderOption.textContent = 'Selecione um título';
+    placeholderOption.disabled = true;
+    placeholderOption.selected = true;
+    titlesSelect.appendChild(placeholderOption);
+
     titles.forEach(title => {
         const option = document.createElement('option');
         option.value = title.Id;
@@ -71,7 +87,45 @@ window.electron.receive('load-titles', (titles) => {
     });
 
     $('#titles').select2({
-        placeholder: "Selecione um ou mais títulos",
+        placeholder: "Selecione um título",
+        allowClear: true
+    });
+});
+
+window.electron.receive('load-users', (dataUsers) => {
+    if (dataUsers.error) {
+        console.error(dataUsers.error);
+        return;
+    }
+
+    const userSelect = document.getElementById('users');
+    if (!userSelect) return;
+
+    userSelect.innerHTML = '';
+
+    const createOption = (value, text, isSelected = false, isDisabled = false) => {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = text;
+        if (isSelected) option.selected = true;
+        if (isDisabled) option.disabled = true;
+        return option;
+    };
+
+    if (!dataUsers.isBlocked) {
+        userSelect.appendChild(createOption('', 'Selecione um usuário', true, true));
+
+        dataUsers.users.forEach(user => {
+            userSelect.appendChild(createOption(user.Id, user.NomeCompleto));
+        });
+    } else {
+        // Adiciona apenas o usuário do config
+        const user = dataUsers.users[0];
+        userSelect.appendChild(createOption(user.Id, user.NomeCompleto, true, true));
+    }
+
+    $('#users').select2({
+        placeholder: "Selecione um usuario",
         allowClear: true
     });
 });

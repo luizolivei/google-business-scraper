@@ -2,7 +2,6 @@ const Search = require('../models/Search');
 const Business = require('../models/Business');
 const City = require('../models/City');
 const SearchCity = require('../models/SearchCity');
-const sequelize = require('../../config/database');
 const log = require('electron-log');
 
 const getEnterprisesBySearch = async (searchTerm) => {
@@ -27,11 +26,11 @@ const getEnterprisesBySearch = async (searchTerm) => {
     }
 };
 
-const createSearchForCities = async (searchTerm, cityIds, userName) => {
+const createSearch = async (searchTerm, cityIds, user) => {
     try {
         const newSearch = await Search.create({
             search: searchTerm,
-            user_name: userName,
+            user: user,
             completed: false
         });
 
@@ -83,7 +82,7 @@ const getAllSearches = async () => {
 };
 module.exports = {
     getEnterprisesBySearch,
-    createSearchForCities,
+    createSearch,
     getAllSearches,
     markSearchAsCompleted
 };

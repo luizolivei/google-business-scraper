@@ -61,6 +61,9 @@
     <input type="text" id="dbUser" placeholder="Usuário" required>
     <input type="password" id="dbPassword" placeholder="Senha" required>
     <input type="text" id="dbHost" placeholder="Host" required>
+    <hr>
+    <label for="appUser">Opcional:</label>
+    <input type="text" id="appUser" placeholder="Id do usuário">
     <button id="saveConfig">Salvar</button>
 </div>
 
@@ -72,9 +75,16 @@
         const dbUser = document.getElementById('dbUser').value;
         const dbPassword = document.getElementById('dbPassword').value;
         const dbHost = document.getElementById('dbHost').value;
+        const appUser = document.getElementById('appUser').value;
 
         if (dbName && dbUser && dbPassword && dbHost) {
-            ipcRenderer.send('save-db-config', { name: dbName, user: dbUser, password: dbPassword, host: dbHost });
+            ipcRenderer.send('save-db-config', {
+                name: dbName,
+                user: dbUser,
+                password: dbPassword,
+                host: dbHost,
+                appUser: appUser
+            });
         } else {
             alert('Por favor, preencha todos os campos.');
         }

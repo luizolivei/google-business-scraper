@@ -2,8 +2,9 @@ const {createDBConfigWindow, createMainWindow} = require("../main/window");
 const {ipcMain, app} = require("electron");
 const fs = require("fs");
 const path = require("path");
+const {getConfigPath} = require("../scripts/mixins/script");
 
-const configPath = path.join(app.getPath('userData'), 'dbConfig.json');
+const configPath = getConfigPath();
 
 function promptForDbConfig() {
     promptWindow = createDBConfigWindow()

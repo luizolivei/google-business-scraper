@@ -2,12 +2,14 @@ const { ipcMain } = require('electron');
 const log = require('electron-log');
 const { getAllCities, getCitiesByIds } = require('../../app/controllers/cityController');
 const { getAllTitles } = require('../../app/controllers/tituloController');
-const { createSearchForCities, markSearchAsCompleted } = require('../../app/controllers/searchController');
+const { createSearch, markSearchAsCompleted } = require('../../app/controllers/searchController');
 const { createSearchEnterpriseEntries } = require('../../app/controllers/searchEnterpriseController');
 const { saveBusinessInfo } = require('../../app/controllers/businessController');
 const getDataFromSearch = require('../../scripts/scraping/index.js');
-const { removeAccents } = require('../../scripts/mixins/script');
+const { removeAccents, getConfigPath} = require('../../scripts/mixins/script');
 const { Notification } = require('electron');
+const {getAllUsers, getUserById} = require("../../app/controllers/usuarioController");
+const fs = require("fs");
 
 function setupIpcMainHandlers() {
     ipcMain.on('load-cities', async (event) => {
@@ -30,9 +32,51 @@ function setupIpcMainHandlers() {
         }
     });
 
-    ipcMain.on('search', async (event, { term, location, title }) => {
+    ipcMain.on('load-users', async (event) => {
         try {
-            const mySearch = await createSearchForCities(term, location, 'admin');
+            // Inicializa as variáveis
+            const configPath = getConfigPath();
+            let config = {};
+            let usersToInput = {};
+
+            // Lê e parseia o arquivo de configuração
+            try {
+                const configFileContent = fs.readFileSync(configPath, 'utf-8');
+                config = JSON.parse(configFileContent);
+            } catch (readError) {
+                log.warn('Arquivo de configuração não encontrado ou inválido:', readError);
+            }
+
+            const appUser = config?.appUser;
+
+            if (!appUser) {
+                // Caso nenhum usuário esteja configurado, carrega todos os usuários
+                const users = await getAllUsers();
+                usersToInput = {
+                    isBlocked: false,
+                    users: users
+                };
+            } else {
+                // Caso um usuário específico esteja configurado
+                const user = await getUserById(appUser);
+                usersToInput = {
+                    isBlocked: true,
+                    users: user ? [user] : []
+                };
+            }
+
+            // Envia os dados para o frontend
+            event.sender.send('load-users', usersToInput);
+        } catch (error) {
+            log.error('Erro ao carregar os usuários:', error);
+            event.sender.send('load-users', { error: 'Erro ao carregar os usuários' });
+        }
+    });
+
+
+    ipcMain.on('search', async (event, { term, location, title, user }) => {
+        try {
+            const mySearch = await createSearch(term, location, user);
             const selectedCities = await getCitiesByIds(location);
 
             const businessIds = [];
