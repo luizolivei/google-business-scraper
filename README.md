@@ -5,8 +5,8 @@ https://gist.githubusercontent.com/manfe/3975938/raw/0aca924f3f53c9331e38d55252f
 os logs de erro ficam em uma pasta equivalente a esta
 C:\Users\USUARIO\AppData\Roaming\buscador-de-empresas\logs
 
-Para dev
-"npm run dev"
+Para desenvolvimento
+"npm run start"
 
 Para build
 "npm run build"
