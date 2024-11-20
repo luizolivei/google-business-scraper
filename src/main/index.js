@@ -1,27 +1,6 @@
 const { app, BrowserWindow } = require('electron');
-const path = require('path');
-const fs = require('fs');
-const { createMainWindow, createDBConfigWindow } = require('./window');
-
-const configPath = path.join(app.getPath('userData'), 'dbConfig.json');
-
-function promptForDbConfig() {
-    promptWindow = createDBConfigWindow()
-
-    const { ipcMain } = require('electron');
-    ipcMain.on('save-db-config', (event, config) => {
-        fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
-        promptWindow.close();
-        createMainWindow();
-    });
-}
-
-function loadDbConfig() {
-    if (fs.existsSync(configPath)) {
-        return JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-    }
-    return null;
-}
+const { promptForDbConfig, loadDbConfig } = require('../config/databaseConfigGenerator');
+const { createMainWindow } = require('./window');
 
 app.whenReady().then(() => {
     if (process.platform === 'win32')
@@ -37,7 +16,7 @@ app.whenReady().then(() => {
         const { initializeDatabase } = require('../config/database');
         initializeDatabase(dbConfig);
         require('../scripts/database/syncTables');
-        const { setupIpcHandlers } = require('./ipcHandlers');
+        const { setupIpcHandlers } = require('./ipc/ipcHandlers');
         createMainWindow();
         setupIpcHandlers();
     }

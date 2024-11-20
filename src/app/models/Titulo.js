@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/database');
 
+//Esse modelo esta completamente fora do padrao pois a tabela ja existia...
+
 const Titulo = sequelize.define('Titulo', {
     Id: {
         type: DataTypes.BIGINT,

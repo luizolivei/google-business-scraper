@@ -6,6 +6,7 @@ require('../../app/models/City');
 require('../../app/models/SearchCity');
 require('../../app/models/SearchEnterprise');
 require('../../app/models/Business');
+// o modelo do Titulo e do Usuario jamais podem ser imporatado aqui
 
 sequelize.sync({ alter: true, force: false })
     .then(() => {
