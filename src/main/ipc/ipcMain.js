@@ -92,6 +92,7 @@ function setupIpcMainHandlers() {
                         business.codigo_ibge = city.codigo_ibge;
                         business.city_name = city.nome;
                         business.id_title = title;
+                        business.user = user;
 
                         const businessId = await saveBusinessInfo(business);
                         businessIds.push(businessId);

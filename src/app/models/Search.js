@@ -4,14 +4,15 @@ const sequelize = require('../../config/database');
 const Search = sequelize.define('Search', {
     search: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: false
     },
     user: {
         type: DataTypes.STRING,
+        allowNull: true
     },
     completed: {
         type: DataTypes.BOOLEAN,
-        defaultValue: false,
+        defaultValue: false
     },
 }, {
     tableName: 'searches',

@@ -1,4 +1,4 @@
-const { Sequelize } = require('sequelize');
+const {Sequelize} = require('sequelize');
 const path = require('path');
 const fs = require('fs');
 const app = require('electron').app;

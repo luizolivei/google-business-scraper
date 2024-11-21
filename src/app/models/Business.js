@@ -87,6 +87,10 @@ const Business = sequelize.define('Business', {
         type: DataTypes.TEXT,
         allowNull: true,
     },
+    user: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
 }, {
     tableName: 'businesses',
     timestamps: true,

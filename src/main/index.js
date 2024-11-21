@@ -1,10 +1,9 @@
-const { app, BrowserWindow } = require('electron');
-const { promptForDbConfig, loadDbConfig } = require('../config/databaseConfigGenerator');
-const { createMainWindow } = require('./window');
+const {app, BrowserWindow} = require('electron');
+const {promptForDbConfig, loadDbConfig} = require('../config/databaseConfigGenerator');
+const {createMainWindow} = require('./window');
 
 app.whenReady().then(() => {
-    if (process.platform === 'win32')
-    {
+    if (process.platform === 'win32') {
         app.setAppUserModelId(app.name);
     }
 
@@ -12,14 +11,15 @@ app.whenReady().then(() => {
 
     if (!dbConfig) {
         promptForDbConfig();
-    } else {
-        const { initializeDatabase } = require('../config/database');
-        initializeDatabase(dbConfig);
-        require('../scripts/database/syncTables');
-        const { setupIpcHandlers } = require('./ipc/ipcHandlers');
-        createMainWindow();
-        setupIpcHandlers();
+        return
     }
+
+    const {initializeDatabase} = require('../config/database');
+    initializeDatabase(dbConfig);
+    require('../scripts/database/syncTables');
+    const {setupIpcHandlers} = require('./ipc/ipcHandlers');
+    createMainWindow();
+    setupIpcHandlers();
 });
 
 app.on('window-all-closed', () => {
