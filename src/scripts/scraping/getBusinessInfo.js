@@ -247,7 +247,7 @@ const getBusinessInfo = async (page, fetchUrl) => {
                 const galleryLinks = document.querySelectorAll(galleryLinkSelector);
                 const filteredLinks = Array.from(galleryLinks)
                     .map(link => link.href)
-                    .filter(href => href.startsWith('https://www.google.com/local/place/fid/'));
+                    .filter(href => href.startsWith('https://www.google.com/local/place/fid/') && href.includes('googleusercontent'));
 
                 gallery3d = filteredLinks.join(', ');
             } catch (e) {

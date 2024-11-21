@@ -1,4 +1,4 @@
-const delay = require("./delay");
+// const delay = require("./delay");
 
 async function moveMouseRandomly(page) {
     //vou deixar todo o codigo comentado para ver se ele realmente melhora ou piora os banimentos

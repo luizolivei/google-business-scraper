@@ -36,8 +36,8 @@ const getDataFromSearch = async (searchTerm) => {
         for (let pageIndex = 0; pageIndex < totalPages; pageIndex++) {
             //caso a pagina seja um multiplo de 5 o sistema espera 5 minutos para continuar; Isso evita bans
             if ((pageIndex + 1) % 5 === 0) {
-                log.info(`Esperando 5 minutos antes de prosseguir para a próxima página...`);
-                await delay(300000);
+                log.info(`Esperando 3 minutos antes de prosseguir para a próxima página...`);
+                await delay(195000);
             }
 
             const start = pageIndex * numberOfItensPerPage + (pageIndex > 2 ? 20 : 0);
@@ -64,8 +64,11 @@ const getDataFromSearch = async (searchTerm) => {
                     businesses.push(scrapingResponse.data);
                 }
 
-                await delay(Math.random() * (15000 - 5000) + 5000);
+                const minDelay = 5000 * 0.65; // 3250 ms
+                const maxDelay = 15000 * 0.65; // 9750 ms
+                await delay(Math.random() * (maxDelay - minDelay) + minDelay);
 
+                //30% de chance de mover o mouse na tela durante essa passada
                 if (Math.random() < 0.3) {
                     await moveMouseRandomly(page);
                 }
